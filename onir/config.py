@@ -62,6 +62,7 @@ def apply_config(name, args, cls):
         arg_key = f'{name}.{key}'
         if arg_key in args:
             value.override_value(args[arg_key])
+        
         result[key] = value.realize()
     for key, val in args.items():
         if key.startswith(f'{name}.'):

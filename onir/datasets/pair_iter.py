@@ -43,7 +43,7 @@ def pair_iter(dataset,
         negs = pair_iter_filter_neg(dataset, neg_candidates, qid, pos_did, score)
         if len(negs.index) < num_neg:
             # not enough negative documents for this positive sample
-            dataset.logger.debug('not enough negs')
+            dataset.logger.debug(f'not enough negs for qid {qid} neg_candidates: {neg_candidates}')
             continue
         dids = [pos_did]
         negs = negs['did'].sample(n=num_neg, random_state=random)
@@ -125,3 +125,4 @@ def pair_iter_filter_neg(dataset, neg_candidates, qid, did, score):
     negs = negs[negs['score'] < score]
     # negs = negs[negs.index < score]
     return negs
+

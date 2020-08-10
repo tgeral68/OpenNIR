@@ -1,0 +1,5 @@
+./
+train_ds.subset=trf3-rnd5-quest
+valid_ds.subset=vaf3-rnd5-quest
+test_ds.subset=f3-rnd5-quest
+

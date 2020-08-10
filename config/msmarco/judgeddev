@@ -1,4 +1,5 @@
 test_ds=msmarco
 test_ds.subset=judgeddev
 test_ds.ranktopk=100
-test_pred.measures=mrr@10,ndcg@20,map,p@1,rprec
+test_pred.measures=mrr@10,ndcg@20,map@1000,p@1,p@20,rprec
+test_ds.rankfn=bm25_k1-0.82_b-0.68

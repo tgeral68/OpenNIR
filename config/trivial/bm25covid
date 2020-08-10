@@ -1,0 +1,4 @@
+./
+train_ds.rankfn=bm25_k1-3.9_b-0.55
+valid_ds.rankfn=bm25_k1-3.9_b-0.55
+test_ds.rankfn=bm25_k1-3.9_b-0.55

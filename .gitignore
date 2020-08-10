@@ -109,3 +109,7 @@ venv.bak/
 
 # Sublime
 *.sublime-workspace
+
+# Output files
+/logs
+/scripts_eval

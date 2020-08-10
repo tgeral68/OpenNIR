@@ -46,6 +46,7 @@ class Reranker(predictors.BasePredictor):
             batch = {}
             for record in batch_items:
                 for k, seq in record.items():
+                    
                     batch.setdefault(k, []).append(seq)
             batch = spec.apply_spec_batch(batch, self.input_spec, device)
             # ship 'em
@@ -75,6 +76,7 @@ class Reranker(predictors.BasePredictor):
     def iter_scores(self, ranker, datasource, device):
         if ranker.name == 'trivial' and not ranker.config['neg'] and not ranker.config['qsum'] and not ranker.config['max']:
             for qid, values in self.dataset.run().items():
+                
                 for did, score in values.items():
                     yield qid, did, score
             return
@@ -136,6 +138,7 @@ class PredictorContext:
         if os.path.exists(run_path):
             run = trec.read_run_dict(run_path)
         else:
+            
             if self.pred.config['source'] == 'run' and self.pred.config['run_threshold'] > 0:
                 official_run = self.pred.dataset.run('dict')
             else:

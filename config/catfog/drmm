@@ -1,0 +1,10 @@
+../msmarco
+ranker.outputs=2
+vocab.source=glove
+vocab.variant=cc-42b-300d 
+ranker=drmm
+ranker.add_runscore=True
+
+test_ds.rankfn=bm25_k1-0.82_b-0.68
+test_pred.measures=p@20,ndcg@20,map@1000
+test_ds.ranktopk=1000

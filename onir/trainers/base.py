@@ -2,7 +2,8 @@ from tqdm import tqdm
 import torch
 from onir import util, trainers
 from onir.interfaces import apex
-
+import pickle, os
+from shutil import copyfile
 
 class Trainer:
     name = None
@@ -17,7 +18,8 @@ class Trainer:
             'lr': 0.001,
             'gpu': True,
             'gpu_determ': True,
-            'encoder_lr': 0.
+            'encoder_lr': 0.,
+            'pipeline': '',
         }
 
     def __init__(self, config, ranker, vocab, train_ds, logger, random):
@@ -36,7 +38,7 @@ class Trainer:
 
         self.device = util.device(self.config, self.logger)
 
-    def iter_train(self, only_cached=False):
+    def iter_train(self, only_cached=False, _top_epoch=False):
         epoch = -1
         base_path = util.path_model_trainer(self.ranker, self.vocab, self, self.dataset)
         context = {
@@ -60,13 +62,33 @@ class Trainer:
             ranker.save(files['weights'][f'{epoch}.p'])
         if f'{epoch}.p' not in files['optimizer']:
             torch.save(optimizer.state_dict(), files['optimizer'][f'{epoch}.p'])
-
+        
         context.update({
             'ranker': lambda: ranker,
             'ranker_path': files['weights'][f'{epoch}.p'],
             'optimizer': lambda: optimizer,
             'optimizer_path': files['optimizer'][f'{epoch}.p'],
         })
+
+        #load ranker/optimizer
+        if _top_epoch:
+            __path="/".join(base_path.split("/")[:-1])+"/"+self.config['pipeline'] # trainer.pipeline=msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs
+            self.logger.info(f'loading prev model : {__path}')
+            w_path = os.path.join(__path, 'weights','-2.p')
+            oppt_path = os.path.join(__path, 'optimizer','-2.p')
+            ranker.load(w_path)
+            optimizer.load_state_dict(torch.load(oppt_path))
+
+            if w_path!=files['weights']['-2.p']:
+                copyfile(w_path,files['weights']['-2.p'] )
+                copyfile(oppt_path,files['optimizer']['-2.p'] )
+
+            context.update({ 
+                'ranker': lambda: ranker,
+                'ranker_path': files['weights'][f'-2.p'],
+                'optimizer': lambda: optimizer,
+                'optimizer_path': files['optimizer'][f'-2.p'],
+            })
 
         yield context # before training
 
@@ -178,6 +200,17 @@ class Trainer:
 
             yield context
 
+
+    def save_best(self, _top_epoch, path):
+        # to -2.p file
+        _from= os.path.join(path, 'weights',f'{_top_epoch}.p')
+        _to= os.path.join(path, 'weights','-2.p')
+        copyfile(_from, _to)
+        _from= os.path.join(path, 'optimizer',f'{_top_epoch}.p')
+        _to= os.path.join(path, 'optimizer','-2.p')
+        copyfile(_from, _to)
+        
+
     def create_optimizer(self):
         params = self.ranker.named_parameters()
         # remove non-grad parameters
@@ -238,3 +271,4 @@ def _load_ranker(ranker, state_path):
         ranker.load(state_path)
         return ranker
     return _wrapped
+

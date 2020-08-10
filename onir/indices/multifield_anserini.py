@@ -137,7 +137,8 @@ class MultifieldAnseriniIndex(indices.BaseIndex):
 
     @memoize_method
     def term2idf(self, term):
-        term = J.A_AnalyzerUtils.tokenize(self._get_stemmed_analyzer(), term).toArray()
+        #term = J.A_AnalyzerUtils.tokenize(self._get_stemmed_analyzer(), term).toArray()
+        term = J.A_AnalyzerUtils.analyze(self._get_analyzer(), term).toArray()
         if term:
             df = self._reader().docFreq(J.L_Term(self._primary_field, term[0]))
             doc_count = self.collection_stats().docCount()
@@ -146,7 +147,8 @@ class MultifieldAnseriniIndex(indices.BaseIndex):
 
     @memoize_method
     def term2idf_unstemmed(self, term):
-        term = J.A_AnalyzerUtils.tokenize(self._get_analyzer(), term).toArray()
+        #term = J.A_AnalyzerUtils.tokenize(self._get_analyzer(), term).toArray()
+        term = J.A_AnalyzerUtils.analyze(self._get_analyzer(), term).toArray()
         if len(term) == 1:
             df = self._reader().docFreq(J.L_Term(self._primary_field, term[0]))
             doc_count = self.collection_stats().docCount()
@@ -190,10 +192,12 @@ class MultifieldAnseriniIndex(indices.BaseIndex):
 
     @memoize_method
     def _get_stemmed_analyzer(self):
-        return J.A_EnglishStemmingAnalyzer(self._settings['stemmer'], J.L_CharArraySet(0, False))
+        #return J.A_DefaultEnglishAnalyzer(self._settings['stemmer'], J.L_CharArraySet(0, False))
+        return J.A_DefaultEnglishAnalyzer.newStemmingInstance(self._settings['stemmer'], J.L_CharArraySet(0, False))
 
     def tokenize(self, text):
-        result = J.A_AnalyzerUtils.tokenize(self._get_analyzer(), text).toArray()
+        #result = J.A_AnalyzerUtils.tokenize(self._get_analyzer(), text).toArray()
+        result = J.A_AnalyzerUtils.analyze(self._get_analyzer(), text).toArray()
         # mostly good, just gonna split off contractions
         result = list(itertools.chain(*(x.split("'") for x in result)))
         return result
@@ -250,7 +254,8 @@ class MultifieldAnseriniIndex(indices.BaseIndex):
         if ldid == -1:
             return -999. * len(query), [-999.] * len(query)
         analyzer = self._get_stemmed_analyzer()
-        query = list(itertools.chain(*[J.A_AnalyzerUtils.tokenize(analyzer, t).toArray() for t in query]))
+        #query = list(itertools.chain(*[J.A_AnalyzerUtils.tokenize(analyzer, t).toArray() for t in query]))
+        query = list(itertools.chain(*[J.A_AnalyzerUtils.analyze(analyzer, t).toArray() for t in query]))
         if not skip_invividual:
             result = []
             for q in query:
@@ -268,7 +273,8 @@ class MultifieldAnseriniIndex(indices.BaseIndex):
         self._searcher().setSimilarity(sim)
         ldids = {self._get_index_utils().convertDocidToLuceneDocid(did): did for did in dids}
         analyzer = self._get_stemmed_analyzer()
-        query = J.A_AnalyzerUtils.tokenize(analyzer, query).toArray()
+        #query = J.A_AnalyzerUtils.tokenize(analyzer, query).toArray()
+        query = J.A_AnalyzerUtils.analyze(analyzer, query).toArray()
         query = ' '.join(_anserini_escape(q, J) for q in query)
         docs = ' '.join(f'{J.A_LuceneDocumentGenerator.FIELD_ID}:{did}' for did in dids)
         lquery = J.L_QueryParser().parse(f'({query}) AND ({docs})', self._primary_field)
@@ -483,3 +489,10 @@ class MultifieldAnseriniIndex(indices.BaseIndex):
         else:
             raise ValueError(f'unknown model {model}')
         return arg_args
+
+def _anserini_escape(text, J):
+    text = J.L_QueryParserUtil.escape(text)
+    text = text.replace('<', '\\<')
+    text = text.replace('>', '\\>')
+    text = text.replace('=', '\\=')
+    return text

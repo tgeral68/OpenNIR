@@ -1,0 +1,14 @@
+pipeline.val_metric=mrr@10
+ranker.qlen=40
+
+test_ds=covid
+test_ds.subset=rnd5-quest
+test_ds.ranktopk=500
+test_pred.measures=mrr@10,ndcg@20,map,p@20,ndcg@10
+test_ds.2020_filter=True
+test_ds.rr_field=title_abs
+test_ds.bs_field=text
+test_ds.bs_override=rnd5-query
+test_ds.rankfn=bm25_k1-3.9_b-0.55
+
+test_ds.subset=f2-rnd5-quest

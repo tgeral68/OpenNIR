@@ -1,0 +1,6 @@
+#!/bin/bash
+
+#nohup bash script_drmm.sh &
+nohup bash script_knrm.sh &
+nohup bash script_pacrr.sh &
+nohup bash script_vbert.sh &
