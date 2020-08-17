@@ -22,6 +22,7 @@ class JesusPipeline(pipelines.BasePipeline):
             'only_cached': False,
             'onlytest': False,
             'finetune': False,
+            'savefile': '_',
         }
 
     def __init__(self, config, trainer, valid_pred, test_pred, logger):
@@ -170,6 +171,7 @@ class JesusPipeline(pipelines.BasePipeline):
             self.logger.info('valid ' + self._build_valid_msg(top_valid_ctxt))
         if self.config['test']:
             self.logger.info('test  ' + self._build_valid_msg(test_ctxt))
+            self._write_metrics_file(test_ctxt)
 
     def _build_train_msg(self, ctxt):
         delta_acc = ctxt['acc'] - ctxt['unsup_acc']
@@ -201,3 +203,11 @@ class JesusPipeline(pipelines.BasePipeline):
             if os.path.exists(ctxt['optimizer_path']):
                 os.remove(ctxt['optimizer_path'])
 
+    def _write_metrics_file(self, ctxt):
+        outputdir = "results"
+        filename = os.path.join(outputdir, self.config.get('savefile')) # format model-namemodel_train-dataset_test-dataset_train-dataset_test-dataset
+
+        with open(filename, "w") as f:
+            for metric, value in sorted(ctxt['metrics'].items()):
+                f.write('{}\t{:.4f}'.format(metric, value))
+                f.write('\n')
