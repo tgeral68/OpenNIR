@@ -1,0 +1,4 @@
+dataset=cord19
+dataset=msmarco
+model=vbert
+model=cedr

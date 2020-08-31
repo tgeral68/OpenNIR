@@ -1,0 +1,82 @@
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+[02;37m[2020-08-18 18:13:37,625][vocab:wordvec_hash][DEBUG] [0m[37m[starting] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p[0m
+[02;37m[2020-08-18 18:13:41,606][vocab:wordvec_hash][DEBUG] [0m[37m[finished] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p [3.98s][0m
+[02;37m[2020-08-18 18:13:52,334][trainer:pairwise][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-18 18:13:52,343][onir.injector][DEBUG] [0m[37mConfiguration:[0m
+ vocab      wordvec_hash                                                  
+--------------------------------------------------------------------------
+ source     [33mglove[0m         |  variant      [33mcc-42b-300d[0m  |  train     False 
+ hashspace  1000          |  init_stddev  0.5          |  log_miss  False 
+
+ train_ds  covid                                                                  
+----------------------------------------------------------------------------------
+ rankfn    [33mbm25_k1-3.9_b-0.55[0m  |  subset       [33mtrf2-rnd5-quest[0m  |  ranktopk  1000 
+ date      2020-07-16          |  2020_filter  [33mTrue[0m             |  bs_field  text 
+ rr_field  title_abs           |  bs_override  [33mrnd5-query[0m       |  fold      all  
+
+ ranker   pacrr                                             
+------------------------------------------------------------
+ qlen     [33m40[0m       |  dlen     2000  |  add_runscore  [33mTrue[0m  
+ mingram  1        |  maxgram  3     |  nfilters      32    
+ idf      True     |  kmax     2     |  shuf          False 
+ combine  dense32                                           
+
+ trainer     pairwise                                                                                                                                                                     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ batch_size  16        |  batches_per_epoch  32         |  grad_acc_batch  0                                                                                                              
+ optimizer   adam      |  lr                 0.001      |  gpu             True                                                                                                           
+ gpu_determ  True      |  encoder_lr         0.0        |  pipeline        [33mcovid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs[0m 
+ lossfn      softmax   |  pos_source         intersect  |  neg_source      run                                                                                                            
+ sampling    query     |  pos_minrel         1          |  unjudged_rel    0                                                                                                              
+ num_neg     1         |  margin             0.0                                                                                                                                          
+
+ valid_ds  covid                                                                  
+----------------------------------------------------------------------------------
+ rankfn    [33mbm25_k1-3.9_b-0.55[0m  |  subset       [33mvaf2-rnd5-quest[0m  |  ranktopk  [33m20[0m   
+ date      2020-07-16          |  2020_filter  [33mTrue[0m             |  bs_field  text 
+ rr_field  title_abs           |  bs_override  [33mrnd5-query[0m       |  fold      all  
+
+ valid_pred  reranker                                                                         
+----------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                            
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map,p@20,ndcg@10[0m 
+ source      run                                                                              
+
+ test_ds   covid                                                                
+--------------------------------------------------------------------------------
+ rankfn    [33mbm25_k1-3.9_b-0.55[0m  |  subset       [33mf2-rnd5-quest[0m  |  ranktopk  [33m500[0m  
+ date      2020-07-16          |  2020_filter  [33mTrue[0m           |  bs_field  text 
+ rr_field  title_abs           |  bs_override  [33mrnd5-query[0m     |  fold      all  
+
+ test_pred   reranker                                                                         
+----------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                            
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map,p@20,ndcg@10[0m 
+ source      run                                                                              
+
+ pipeline      jesus                                                                                               
+-------------------------------------------------------------------------------------------------------------------
+ max_epoch     1000    |  early_stop     20     |  warmup       -1                                                 
+ val_metric    [33mmrr@10[0m  |  purge_weights  True   |  test         [33mTrue[0m                                               
+ initial_eval  False   |  skip_ds_init   False  |  only_cached  False                                              
+ onlytest      [33mTrue[0m    |  finetune       [33mTrue[0m   |  savefile     [33mmodel_pacrr-train_msmarco-train_cord19-test_cord19[0m 
+[0m
+[02;37m[2020-08-18 18:13:52,344][valid_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-18 18:13:52,346][trainer:pairwise][INFO] [0m[32mtrain path: ../data/models/config1/pacrr_40q_2000d_ng-1-3_k-2_idf_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs[0m
+[02;37m[2020-08-18 18:13:55,374][trainer:pairwise][INFO] [0m[32mloading prev model : ../data/models/config1/pacrr_40q_2000d_ng-1-3_k-2_idf_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs[0m
+[02;37m[2020-08-18 18:13:55,379][pipeline:jesus][DEBUG] [0m[37m[jesus] skipping training[0m
+[02;37m[2020-08-18 18:13:55,379][pipeline:jesus][DEBUG] [0m[37m[jesus] loading top context[0m
+[02;37m[2020-08-18 18:13:55,379][pipeline:jesus][DEBUG] [0m[37m[jesus] Top epoch context: {'epoch': -1, 'batch_size': 16, 'batches_per_epoch': 32, 'num_microbatches': 1, 'device': device(type='cuda'), 'base_path': '../data/models/config1/pacrr_40q_2000d_ng-1-3_k-2_idf_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs', 'ranker': <function Trainer.iter_train.<locals>.<lambda> at 0x7fdb6dfeebf8>, 'ranker_path': '../data/models/config1/pacrr_40q_2000d_ng-1-3_k-2_idf_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs/weights/-2.p', 'optimizer': <function Trainer.iter_train.<locals>.<lambda> at 0x7fdb6dfeed08>, 'optimizer_path': '../data/models/config1/pacrr_40q_2000d_ng-1-3_k-2_idf_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs/optimizer/-2.p'}[0m
+[02;37m[2020-08-18 18:13:55,379][pipeline:jesus][INFO] [0m[32mStarting load ranker[0m
+[02;37m[2020-08-18 18:13:55,379][pipeline:jesus][INFO] [0m[32mStarting test predictor run[0m
+[02;37m[2020-08-18 18:13:55,379][pipeline:jesus][DEBUG] [0m[37m[starting] testing[0m
+[02;37m[2020-08-18 18:13:55,380][test_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-18 18:13:55,381][test_ds:covid][DEBUG] [0m[37m[starting] reading bm25_k1-3.9_b-0.55:500[0m
+[02;37m[2020-08-18 18:13:55,394][test_ds:covid][DEBUG] [0m[37m[finished] reading bm25_k1-3.9_b-0.55:500 [13ms][0m
+[02;37m[2020-08-18 18:13:55,396][test_ds:covid][DEBUG] [0m[37m[starting] reading bm25_k1-3.9_b-0.55:500[0m
+[02;37m[2020-08-18 18:13:55,427][test_ds:covid][DEBUG] [0m[37m[finished] reading bm25_k1-3.9_b-0.55:500 [32ms][0m
+[02;37m[2020-08-18 18:13:55,429][onir.interfaces.java][DEBUG] [0m[37m[starting] initializing jnius[0m
+[02;37m[2020-08-18 18:13:56,271][onir.interfaces.java][DEBUG] [0m[37m[finished] initializing jnius [841ms][0m
+[02;37m[2020-08-18 18:14:23,380][pipeline:jesus][DEBUG] [0m[37m[finished] testing [28.00s][0m
+[02;37m[2020-08-18 18:14:23,381][pipeline:jesus][INFO] [0m[32mtest run at ../data/models/config1/pacrr_40q_2000d_ng-1-3_k-2_idf_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs/covid_f2-rnd5-quest_bm25_k1-3.9_b-0.55.500_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs/runs/-1.run[0m
+[02;37m[2020-08-18 18:14:23,381][pipeline:jesus][INFO] [0m[32mtest  epoch=-1 map=0.1258 [mrr@10=0.7731] ndcg@10=0.4642 ndcg@20=0.4204 p@20=0.4556 runscore_alpha=0.2574[0m

@@ -1,0 +1,86 @@
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+[02;37m[2020-08-22 07:21:06,270][onir.config][WARNING] [0m[33mArgument vocab.source=glove set but no matching setting in <class 'onir.vocab.bert_vocab.BertVocab'>[0m
+[02;37m[2020-08-22 07:21:06,271][onir.config][WARNING] [0m[33mArgument vocab.variant=cc-42b-300d set but no matching setting in <class 'onir.vocab.bert_vocab.BertVocab'>[0m
+[02;37m[2020-08-22 07:21:06,723][onir.config][WARNING] [0m[33munknown bm25 arg k1-0.82[0m
+[02;37m[2020-08-22 07:21:06,723][onir.config][WARNING] [0m[33munknown bm25 arg b-0.68[0m
+[02;37m[2020-08-22 07:21:12,396][vocab:bert][DEBUG] [0m[37m[starting] loading BERT weights from ../data/vocab/bert/config2[0m
+[02;37m[2020-08-22 07:21:12,860][vocab:bert][DEBUG] [0m[37m[finished] loading BERT weights from ../data/vocab/bert/config2 [464ms][0m
+[02;37m[2020-08-22 07:21:12,892][trainer:pairwise][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-22 07:21:12,893][onir.config][WARNING] [0m[33munknown bm25 arg k1-0.82[0m
+[02;37m[2020-08-22 07:21:12,893][onir.config][WARNING] [0m[33munknown bm25 arg b-0.68[0m
+[02;37m[2020-08-22 07:21:12,901][onir.injector][DEBUG] [0m[37mConfiguration:[0m
+ vocab       bert                                                            
+-----------------------------------------------------------------------------
+ bert_base   bert-base-uncased  |  bert_weights  [33mconfig2[0m  |  layer     -1    
+ last_layer  False              |  train         [33mTrue[0m     |  encoding  joint 
+
+ train_ds             msmarco                                                                            
+---------------------------------------------------------------------------------------------------------
+ rankfn               [33mbm25_k1-0.82_b-0.68[0m  |  subset           train    |  ranktopk                 100  
+ special              [33mmspairs[0m              |  index            default  |  init_skip_train10        True 
+ init_skip_train_med  True                 |  init_skip_msrun  True     |  init_skip_doctttttquery  True 
+
+ ranker  cedr_knrm                                                                                                                         
+-------------------------------------------------------------------------------------------------------------------------------------------
+ qlen    [33m40[0m                                                |  dlen    2000                                           |  add_runscore  [33mTrue[0m 
+ mus     -0.9,-0.7,-0.5,-0.3,-0.1,0.1,0.3,0.5,0.7,0.9,1.0  |  sigmas  0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.001  |  grad_kernels  True 
+
+ trainer     pairwise                                                                                                    
+-------------------------------------------------------------------------------------------------------------------------
+ batch_size  16        |  batches_per_epoch  32         |  grad_acc_batch  [33m1[0m                                             
+ optimizer   adam      |  lr                 0.001      |  gpu             True                                          
+ gpu_determ  True      |  encoder_lr         [33m2e-05[0m      |  pipeline        [33mmsmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m 
+ lossfn      softmax   |  pos_source         intersect  |  neg_source      run                                           
+ sampling    query     |  pos_minrel         1          |  unjudged_rel    0                                             
+ num_neg     1         |  margin             0.0                                                                         
+
+ valid_ds             msmarco                                                                            
+---------------------------------------------------------------------------------------------------------
+ rankfn               [33mbm25_k1-0.82_b-0.68[0m  |  subset           [33mminidev[0m  |  ranktopk                 [33m20[0m   
+ special              [02;37m[empty][0m              |  index            default  |  init_skip_train10        True 
+ init_skip_train_med  True                 |  init_skip_msrun  True     |  init_skip_doctttttquery  True 
+
+ valid_pred  reranker                                                                                
+-----------------------------------------------------------------------------------------------------
+ batch_size  [33m4[0m         |  gpu            True  |  gpu_determ  True                                   
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map@1000,p@1,p@20,rprec[0m 
+ source      run                                                                                     
+
+ test_ds   covid                                                                
+--------------------------------------------------------------------------------
+ rankfn    [33mbm25_k1-3.9_b-0.55[0m  |  subset       [33mf2-rnd5-quest[0m  |  ranktopk  [33m500[0m  
+ date      2020-07-16          |  2020_filter  [33mTrue[0m           |  bs_field  text 
+ rr_field  title_abs           |  bs_override  [33mrnd5-query[0m     |  fold      all  
+
+ test_pred   reranker                                                                         
+----------------------------------------------------------------------------------------------
+ batch_size  [33m4[0m         |  gpu            True  |  gpu_determ  True                            
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map,p@20,ndcg@10[0m 
+ source      run                                                                              
+
+ pipeline      jesus                                                                                              
+------------------------------------------------------------------------------------------------------------------
+ max_epoch     1000    |  early_stop     20     |  warmup       -1                                                
+ val_metric    [33mmrr@10[0m  |  purge_weights  True   |  test         [33mTrue[0m                                              
+ initial_eval  False   |  skip_ds_init   False  |  only_cached  False                                             
+ onlytest      [33mTrue[0m    |  finetune       [33mTrue[0m   |  savefile     [33mmodel_cedr-train_cord19-train_msmarco-test_cord19[0m 
+[0m
+[02;37m[2020-08-22 07:21:12,901][valid_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-22 07:21:12,904][trainer:pairwise][INFO] [0m[32mtrain path: ../data/models/config2/cedr_knrm_40q_2000d_addrun/bert_bert-base-uncased_config2_tr/pairwise_32x16x1_adam-0.001_encoderlr-2e-05_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m
+[02;37m[2020-08-22 07:21:16,003][trainer:pairwise][INFO] [0m[32mloading prev model : ../data/models/config2/cedr_knrm_40q_2000d_addrun/bert_bert-base-uncased_config2_tr/pairwise_32x16x1_adam-0.001_encoderlr-2e-05_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m
+[02;37m[2020-08-22 07:21:16,836][pipeline:jesus][DEBUG] [0m[37m[jesus] skipping training[0m
+[02;37m[2020-08-22 07:21:16,836][pipeline:jesus][DEBUG] [0m[37m[jesus] loading top context[0m
+[02;37m[2020-08-22 07:21:16,836][pipeline:jesus][DEBUG] [0m[37m[jesus] Top epoch context: {'epoch': -1, 'batch_size': 16, 'batches_per_epoch': 32, 'num_microbatches': 16, 'device': device(type='cuda'), 'base_path': '../data/models/config2/cedr_knrm_40q_2000d_addrun/bert_bert-base-uncased_config2_tr/pairwise_32x16x1_adam-0.001_encoderlr-2e-05_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs', 'ranker': <function Trainer.iter_train.<locals>.<lambda> at 0x7fc0c000d048>, 'ranker_path': '../data/models/config2/cedr_knrm_40q_2000d_addrun/bert_bert-base-uncased_config2_tr/pairwise_32x16x1_adam-0.001_encoderlr-2e-05_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs/weights/-2.p', 'optimizer': <function Trainer.iter_train.<locals>.<lambda> at 0x7fc0c000d6a8>, 'optimizer_path': '../data/models/config2/cedr_knrm_40q_2000d_addrun/bert_bert-base-uncased_config2_tr/pairwise_32x16x1_adam-0.001_encoderlr-2e-05_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs/optimizer/-2.p'}[0m
+[02;37m[2020-08-22 07:21:16,837][pipeline:jesus][INFO] [0m[32mStarting load ranker[0m
+[02;37m[2020-08-22 07:21:16,837][pipeline:jesus][INFO] [0m[32mStarting test predictor run[0m
+[02;37m[2020-08-22 07:21:16,837][pipeline:jesus][DEBUG] [0m[37m[starting] testing[0m
+[02;37m[2020-08-22 07:21:16,837][test_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-22 07:21:17,152][test_ds:covid][DEBUG] [0m[37m[starting] reading bm25_k1-3.9_b-0.55:500[0m
+[02;37m[2020-08-22 07:21:17,164][test_ds:covid][DEBUG] [0m[37m[finished] reading bm25_k1-3.9_b-0.55:500 [13ms][0m
+[02;37m[2020-08-22 07:21:17,166][test_ds:covid][DEBUG] [0m[37m[starting] reading bm25_k1-3.9_b-0.55:500[0m
+[02;37m[2020-08-22 07:21:17,197][test_ds:covid][DEBUG] [0m[37m[finished] reading bm25_k1-3.9_b-0.55:500 [32ms][0m
+[02;37m[2020-08-22 07:21:17,200][onir.interfaces.java][DEBUG] [0m[37m[starting] initializing jnius[0m
+[02;37m[2020-08-22 07:21:17,931][onir.interfaces.java][DEBUG] [0m[37m[finished] initializing jnius [732ms][0m
+[02;37m[2020-08-22 07:24:12,415][pipeline:jesus][DEBUG] [0m[37m[finished] testing [02:56][0m
+[02;37m[2020-08-22 07:24:12,416][pipeline:jesus][INFO] [0m[32mtest run at ../data/models/config2/cedr_knrm_40q_2000d_addrun/bert_bert-base-uncased_config2_tr/pairwise_32x16x1_adam-0.001_encoderlr-2e-05_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs/covid_f2-rnd5-quest_bm25_k1-3.9_b-0.55.500_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs/runs/-1.run[0m
+[02;37m[2020-08-22 07:24:12,416][pipeline:jesus][INFO] [0m[32mtest  epoch=-1 map=0.1415 [mrr@10=0.7796] ndcg@10=0.5355 ndcg@20=0.5243 p@20=0.5667 runscore_alpha=0.3164[0m

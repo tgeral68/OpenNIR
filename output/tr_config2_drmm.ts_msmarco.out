@@ -1,0 +1,91 @@
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+[02;37m[2020-08-19 12:36:55,371][vocab:wordvec_hash][DEBUG] [0m[37m[starting] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p[0m
+[02;37m[2020-08-19 12:37:07,475][vocab:wordvec_hash][DEBUG] [0m[37m[finished] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p [12.10s][0m
+[02;37m[2020-08-19 12:37:21,706][onir.config][WARNING] [0m[33munknown bm25 arg k1-0.82[0m
+[02;37m[2020-08-19 12:37:21,706][onir.config][WARNING] [0m[33munknown bm25 arg b-0.68[0m
+[02;37m[2020-08-19 12:37:37,357][trainer:pairwise][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-19 12:37:37,357][onir.config][WARNING] [0m[33munknown bm25 arg k1-0.82[0m
+[02;37m[2020-08-19 12:37:37,357][onir.config][WARNING] [0m[33munknown bm25 arg b-0.68[0m
+[02;37m[2020-08-19 12:37:37,358][onir.config][WARNING] [0m[33munknown bm25 arg k1-0.82[0m
+[02;37m[2020-08-19 12:37:37,359][onir.config][WARNING] [0m[33munknown bm25 arg b-0.68[0m
+[02;37m[2020-08-19 12:37:37,363][onir.injector][DEBUG] [0m[37mConfiguration:[0m
+ vocab      wordvec_hash                                                  
+--------------------------------------------------------------------------
+ source     [33mglove[0m         |  variant      [33mcc-42b-300d[0m  |  train     False 
+ hashspace  1000          |  init_stddev  0.5          |  log_miss  False 
+
+ train_ds             msmarco                                                                            
+---------------------------------------------------------------------------------------------------------
+ rankfn               [33mbm25_k1-0.82_b-0.68[0m  |  subset           train    |  ranktopk                 100  
+ special              [33mmspairs[0m              |  index            default  |  init_skip_train10        True 
+ init_skip_train_med  True                 |  init_skip_msrun  True     |  init_skip_doctttttquery  True 
+
+ ranker   drmm                                            
+----------------------------------------------------------
+ qlen     [33m40[0m    |  dlen   2000  |  add_runscore  [33mTrue[0m     
+ hidden   5     |  nbins  11    |  histo         logcount 
+ combine  idf                                             
+
+ trainer     pairwise                                                                                                    
+-------------------------------------------------------------------------------------------------------------------------
+ batch_size  16        |  batches_per_epoch  32         |  grad_acc_batch  0                                             
+ optimizer   adam      |  lr                 0.001      |  gpu             True                                          
+ gpu_determ  True      |  encoder_lr         0.0        |  pipeline        [33mmsmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m 
+ lossfn      softmax   |  pos_source         intersect  |  neg_source      run                                           
+ sampling    query     |  pos_minrel         1          |  unjudged_rel    0                                             
+ num_neg     1         |  margin             0.0                                                                         
+
+ valid_ds             msmarco                                                                            
+---------------------------------------------------------------------------------------------------------
+ rankfn               [33mbm25_k1-0.82_b-0.68[0m  |  subset           [33mminidev[0m  |  ranktopk                 [33m20[0m   
+ special              [02;37m[empty][0m              |  index            default  |  init_skip_train10        True 
+ init_skip_train_med  True                 |  init_skip_msrun  True     |  init_skip_doctttttquery  True 
+
+ valid_pred  reranker                                                                                
+-----------------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                                   
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map@1000,p@1,p@20,rprec[0m 
+ source      run                                                                                     
+
+ test_ds              msmarco                                                                              
+-----------------------------------------------------------------------------------------------------------
+ rankfn               [33mbm25_k1-0.82_b-0.68[0m  |  subset           [33mjudgeddev[0m  |  ranktopk                 100  
+ special              [02;37m[empty][0m              |  index            default    |  init_skip_train10        True 
+ init_skip_train_med  True                 |  init_skip_msrun  True       |  init_skip_doctttttquery  True 
+
+ test_pred   reranker                                                                                
+-----------------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                                   
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map@1000,p@1,p@20,rprec[0m 
+ source      run                                                                                     
+
+ pipeline      jesus                                                                                               
+-------------------------------------------------------------------------------------------------------------------
+ max_epoch     1000    |  early_stop     20     |  warmup       -1                                                 
+ val_metric    [33mmrr@10[0m  |  purge_weights  True   |  test         [33mTrue[0m                                               
+ initial_eval  False   |  skip_ds_init   False  |  only_cached  False                                              
+ onlytest      [33mTrue[0m    |  finetune       [33mTrue[0m   |  savefile     [33mmodel_drmm-train_cord19-train_msmarco-test_msmarco[0m 
+[0m
+[02;37m[2020-08-19 12:37:37,364][valid_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-19 12:37:37,365][trainer:pairwise][INFO] [0m[32mtrain path: ../data/models/config2/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m
+[02;37m[2020-08-19 12:37:40,738][trainer:pairwise][INFO] [0m[32mloading prev model : ../data/models/config2/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m
+[02;37m[2020-08-19 12:37:40,745][pipeline:jesus][DEBUG] [0m[37m[jesus] skipping training[0m
+[02;37m[2020-08-19 12:37:40,745][pipeline:jesus][DEBUG] [0m[37m[jesus] loading top context[0m
+[02;37m[2020-08-19 12:37:40,745][pipeline:jesus][DEBUG] [0m[37m[jesus] Top epoch context: {'epoch': -1, 'batch_size': 16, 'batches_per_epoch': 32, 'num_microbatches': 1, 'device': device(type='cuda'), 'base_path': '../data/models/config2/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs', 'ranker': <function Trainer.iter_train.<locals>.<lambda> at 0x7f52176b2158>, 'ranker_path': '../data/models/config2/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs/weights/-2.p', 'optimizer': <function Trainer.iter_train.<locals>.<lambda> at 0x7f516ad529d8>, 'optimizer_path': '../data/models/config2/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs/optimizer/-2.p'}[0m
+[02;37m[2020-08-19 12:37:40,745][pipeline:jesus][INFO] [0m[32mStarting load ranker[0m
+[02;37m[2020-08-19 12:37:40,745][pipeline:jesus][INFO] [0m[32mStarting test predictor run[0m
+[02;37m[2020-08-19 12:37:40,745][pipeline:jesus][DEBUG] [0m[37m[starting] testing[0m
+[02;37m[2020-08-19 12:37:40,745][test_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-19 12:37:40,747][test_ds:msmarco][DEBUG] [0m[37m[starting] loading bm25_k1-0.82_b-0.68:100 from larger batch bm25_k1-0.82_b-0.68:1000[0m
+[02;37m[2020-08-19 12:38:57,265][test_ds:msmarco][DEBUG] [0m[37m[finished] loading bm25_k1-0.82_b-0.68:100 from larger batch bm25_k1-0.82_b-0.68:1000 [01:17][0m
+[02;37m[2020-08-19 12:38:57,276][test_ds:msmarco][DEBUG] [0m[37m[starting] loading bm25_k1-0.82_b-0.68:100 from larger batch bm25_k1-0.82_b-0.68:1000[0m
+[02;37m[2020-08-19 12:40:21,468][test_ds:msmarco][DEBUG] [0m[37m[finished] loading bm25_k1-0.82_b-0.68:100 from larger batch bm25_k1-0.82_b-0.68:1000 [01:24][0m
+[02;37m[2020-08-19 12:40:21,640][test_ds:msmarco][DEBUG] [0m[37m[starting] loading queries[0m
+[02;37m[2020-08-19 12:40:21,710][test_ds:msmarco][DEBUG] [0m[37m[finished] loading queries: [69ms] [55578it] [800158.68it/s][0m
+[02;37m[2020-08-19 12:40:21,711][onir.interfaces.java][DEBUG] [0m[37m[starting] initializing jnius[0m
+[02;37m[2020-08-19 12:40:22,601][onir.interfaces.java][DEBUG] [0m[37m[finished] initializing jnius [890ms][0m
+[02;37m[2020-08-19 15:41:00,326][test_ds:msmarco][DEBUG] [0m[37m[starting] loading qrels[0m
+[02;37m[2020-08-19 15:41:00,402][test_ds:msmarco][DEBUG] [0m[37m[finished] loading qrels [76ms][0m
+[02;37m[2020-08-19 15:41:14,392][pipeline:jesus][DEBUG] [0m[37m[finished] testing [3:03:34][0m
+[02;37m[2020-08-19 15:41:14,392][pipeline:jesus][INFO] [0m[32mtest run at ../data/models/config2/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs/msmarco_judgeddev_bm25_k1-0.82_b-0.68.100/runs/-1.run[0m
+[02;37m[2020-08-19 15:41:14,393][pipeline:jesus][INFO] [0m[32mtest  epoch=-1 map@1000=0.2007 [mrr@10=0.1937] ndcg@20=0.2632 p@1=0.1106 p@20=0.0255 rprec=0.1098 runscore_alpha=0.1887[0m

@@ -4,27 +4,15 @@ from onir import datasets, util, indices
 from onir.interfaces import trec, plaintext
 
 
-# from <https://github.com/faneshion/DRMM/blob/9d348640ef8a56a8c1f2fa0754fe87d8bb5785bd/NN4IR.cpp>
-FOLDS = {
-    'f1': {'302', '303', '309', '316', '317', '319', '323', '331', '336', '341', '356', '357', '370', '373', '378', '381', '383', '392', '394', '406', '410', '411', '414', '426', '428', '433', '447', '448', '601', '607', '608', '612', '617', '619', '635', '641', '642', '646', '647', '654', '656', '662', '665', '669', '670', '679', '684', '690', '692', '700'},
-    'f2': {'301', '308', '312', '322', '327', '328', '338', '343', '348', '349', '352', '360', '364', '365', '369', '371', '374', '386', '390', '397', '403', '419', '422', '423', '424', '432', '434', '440', '446', '602', '604', '611', '623', '624', '627', '632', '638', '643', '651', '652', '663', '674', '675', '678', '680', '683', '688', '689', '695', '698'},
-    'f3': {'306', '307', '313', '321', '324', '326', '334', '347', '351', '354', '358', '361', '362', '363', '376', '380', '382', '396', '404', '413', '415', '417', '427', '436', '437', '439', '444', '445', '449', '450', '603', '605', '606', '614', '620', '622', '626', '628', '631', '637', '644', '648', '661', '664', '666', '671', '677', '685', '687', '693'},
-    'f4': {'320', '325', '330', '332', '335', '337', '342', '344', '350', '355', '368', '377', '379', '387', '393', '398', '402', '405', '407', '408', '412', '420', '421', '425', '430', '431', '435', '438', '616', '618', '625', '630', '633', '636', '639', '649', '650', '653', '655', '657', '659', '667', '668', '672', '673', '676', '682', '686', '691', '697'},
-    'f5': {'304', '305', '310', '311', '314', '315', '318', '329', '333', '339', '340', '345', '346', '353', '359', '366', '367', '372', '375', '384', '385', '388', '389', '391', '395', '399', '400', '401', '409', '416', '418', '429', '441', '442', '443', '609', '610', '613', '615', '621', '629', '634', '640', '645', '658', '660', '681', '694', '696', '699'}
-}
-
-_ALL = set.union(*FOLDS.values())
-_FOLD_IDS = list(sorted(FOLDS.keys()))
-for i in range(len(FOLDS)):
-    FOLDS['tr' + _FOLD_IDS[i]] = _ALL - FOLDS[_FOLD_IDS[i]] - FOLDS[_FOLD_IDS[i-1]]
-    FOLDS['va' + _FOLD_IDS[i]] = FOLDS[_FOLD_IDS[i-1]]
-FOLDS['all'] = _ALL
+VALIDATION_QIDS=[135, 127, 222, 112, 142, 118, 191, 174, 194, 199, 225, 119, 203, 168]
+TEST_QIDS = [192, 115, 151, 180, 121, 156, 181, 177, 158, 122, 211, 147, 195, 224, 129, 111, 183, 137, 216, 164, 205, 223, 123]
 
 
 _FILES = {
-    'index': dict(url='https://git.uwaterloo.ca/jimmylin/anserini-indexes/raw/master/index-robust04-20191213.tar.gz', expected_md5="15f3d001489c97849a010b0a4734d018"),
-    'queries': dict(url='https://trec.nist.gov/data/robust/04.testset.gz', expected_md5="5eac3d774a2f87da61c08a94f945beff"),
-    'qrels': dict(url='https://trec.nist.gov/data/robust/qrels.robust2004.txt', expected_md5="123c2a0ba2ec31178cb1050995dcfdfa"),
+    'qrels_2013': dict(url='https://trec.nist.gov/data/microblog/2013/qrels.txt', expected_md5="4776a5dfd80b3f675184315ec989c02f"),
+    'queries_2013': dict(url='https://trec.nist.gov/data/microblog/2013/topics.MB111-170.txt', expected_md5="0b78d99dfa2d655dca7e9f138a93c21a"),
+    'queries_2014': dict(url='https://trec.nist.gov/data/microblog/2014/topics.MB171-225.txt', expected_md5="28e791895ce21469eabf1944668b26ef"),
+    'qrels_2014': dict(url='https://trec.nist.gov/data/microblog/2014/qrels2014.txt', expected_md5="68d9a1920b244f6ccdc687ee1d473214"),
 }
 
 
@@ -66,47 +54,85 @@ https://trec.nist.gov/data/cd45/index.html"""
     @memoize_method
     def _load_queries_base(self, subset):
         topics = self._load_topics()
+        _subset=self.config['subset']
         result = {}
-        for qid in FOLDS[subset]:
-            result[qid] = topics[qid]
+
+        for qid,_ in topics.items():
+            if _subset=='valid' and qid in VALIDATION_QIDS:
+                result[qid] = topics[qid]
+            elif _subset=='test' and qid in TEST_QIDS:
+                result[qid] = topics[qid]
+            else:
+                result[qid] = topics[qid]
+
         return result
+        #return topics
 
     def qrels(self, fmt='dict'):
         return self._load_qrels(self.config['subset'], fmt)
 
     @memoize_method
     def _load_qrels(self, subset, fmt):
-        return trec.read_qrels_fmt(os.path.join(util.path_dataset(self), f'{subset}.qrels'), fmt)
+        print("Reading qrels",f'{subset}.qrels.txt')
+        return trec.read_qrels_fmt(os.path.join(util.path_dataset(self), f'{subset}.qrels.txt'), fmt)
 
     @memoize_method
     def _load_topics(self):
         result = {}
-        for item, qid, text in plaintext.read_tsv(os.path.join(util.path_dataset(self), 'topics.txt')):
-            if item == 'topic':
-                result[qid] = text
+        for qid, text in plaintext.read_tsv(os.path.join(util.path_dataset(self), 'topics.txt')):
+            #nqid=int(qid.replace('MB','').strip())
+            result[qid] = text
         return result
 
     def init(self, force=False):
         base_path = util.path_dataset(self)
         idxs = [self.index, self.index_stem, self.doc_store]
         self._init_indices_parallel(idxs, self._init_iter_collection(), force)
-        return
-        qrels_file = os.path.join(base_path, 'qrels.robust2004.txt')
-        if (force or not os.path.exists(qrels_file)) and self._confirm_dua():
-            util.download(**_FILES['qrels'], file_name=qrels_file)
+        print("Starting to process general files")        
+        train_qrels = os.path.join(base_path, 'train.qrels.txt')
+        valid_qrels = os.path.join(base_path, 'valid.qrels.txt')
+        test_qrels = os.path.join(base_path, 'test.qrels.txt')
 
-        for fold in FOLDS:
-            fold_qrels_file = os.path.join(base_path, f'{fold}.qrels')
-            if (force or not os.path.exists(fold_qrels_file)):
-                all_qrels = trec.read_qrels_dict(qrels_file)
-                fold_qrels = {qid: dids for qid, dids in all_qrels.items() if qid in FOLDS[fold]}
-                trec.write_qrels_dict(fold_qrels_file, fold_qrels)
+        if (force or not os.path.exists(train_qrels) or not os.path.exists(valid_qrels)) and self._confirm_dua():
+            source_stream = util.download_stream(**_FILES['qrels_2013'], encoding='utf8')
+            source_stream2 = util.download_stream(**_FILES['qrels_2014'], encoding='utf8')
+            with util.finialized_file(train_qrels, 'wt') as tf, \
+                 util.finialized_file(valid_qrels, 'wt') as vf, \
+                 util.finialized_file(test_qrels, 'wt') as Tf: 
+                for line in source_stream:
+                    cols = line.strip().split()
+                    if int(cols[0]) in VALIDATION_QIDS:
+                        vf.write(' '.join(cols) + '\n')
+                    elif int(cols[0]) in TEST_QIDS:
+                        Tf.write(' '.join(cols)+ '\n')
+                    else:
+                        tf.write(' '.join(cols) + '\n')
+                for line in source_stream2:
+                    cols = line.strip().split()
+                    if cols[0] in VALIDATION_QIDS:
+                        vf.write(' '.join(cols) + '\n')
+                    elif int(cols[0]) in TEST_QIDS:
+                        Tf.write(' '.join(cols)+ '\n')
+                    else:
+                        tf.write(' '.join(cols) + '\n')
+            
 
-        query_file = os.path.join(base_path, 'topics.txt')
-        if (force or not os.path.exists(query_file)) and self._confirm_dua():
-            query_file_stream = util.download_stream(**_FILES['queries'], encoding='utf8')
-            with util.finialized_file(query_file, 'wt') as f:
-                plaintext.write_tsv(f, trec.parse_query_format(query_file_stream))
+        all_queries = os.path.join(base_path, 'topics.txt')
+
+        if (force or not os.path.exists(all_queries) ) and self._confirm_dua():
+            source_stream = util.download_stream(**_FILES['queries_2013'], encoding='utf8')
+            source_stream2 = util.download_stream(**_FILES['queries_2014'], encoding='utf8')
+            train, valid = [], []
+            for _id,_query in trec.parse_query_mbformat(source_stream):
+                nid = _id.replace('MB','').strip()
+                train.append([nid,_query])
+            
+            for _id,_query in trec.parse_query_mbformat(source_stream2):
+                nid = _id.replace('MB','').strip()
+                train.append([nid,_query])
+
+            plaintext.write_tsv(all_queries, train)
+
 
     def _init_iter_collection(self):
         # Using the trick here from capreolus, pulling document content out of public index:

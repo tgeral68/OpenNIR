@@ -82,7 +82,7 @@ class JesusPipeline(pipelines.BasePipeline):
             valid_ctxt = dict(validator(train_ctxt))
 
             message = self._build_valid_msg(valid_ctxt)
-
+            #print("METRIC!", valid_ctxt['metrics'])
             if valid_ctxt['epoch'] >= self.config['warmup']:
                 if self.config['val_metric'] == '':
                     top_epoch = valid_ctxt['epoch']
@@ -131,7 +131,7 @@ class JesusPipeline(pipelines.BasePipeline):
 
         # save top train epoch for faster testing without needing the retraining phase
         if not self.config.get('onlytest'):
-            pickle.dump(top_epoch, open( top_train_ctxt['base_path']+"/top_epoch.pickle", "wb") )
+            #pickle.dump(top_epoch, open( top_train_ctxt['base_path']+"/top_epoch.pickle", "wb") )
             # move best to -2.p
 
             self.trainer.save_best(top_epoch, top_train_ctxt['base_path'])

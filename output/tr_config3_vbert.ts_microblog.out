@@ -1,0 +1,80 @@
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+[02;37m[2020-08-24 22:40:20,385][onir.config][WARNING] [0m[33mArgument vocab.source=glove set but no matching setting in <class 'onir.vocab.bert_vocab.BertVocab'>[0m
+[02;37m[2020-08-24 22:40:20,386][onir.config][WARNING] [0m[33mArgument vocab.variant=cc-42b-300d set but no matching setting in <class 'onir.vocab.bert_vocab.BertVocab'>[0m
+[02;37m[2020-08-24 22:40:26,555][trainer:pairwise][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-24 22:40:26,560][onir.injector][DEBUG] [0m[37mConfiguration:[0m
+ vocab       bert                                                            
+-----------------------------------------------------------------------------
+ bert_base   bert-base-uncased  |  bert_weights  [02;37m[empty][0m  |  layer     -1    
+ last_layer  False              |  train         [33mTrue[0m     |  encoding  joint 
+
+ train_ds  microblog                                     
+---------------------------------------------------------
+ rankfn    bm25       |  subset  [33mtrain[0m  |  ranktopk  100 
+
+ ranker   vanilla_transformer                                          
+-----------------------------------------------------------------------
+ qlen     [33m40[0m                   |  dlen     2000  |  add_runscore  [33mTrue[0m 
+ combine  linear               |  outputs  1                           
+
+ trainer     pairwise                                                                                
+-----------------------------------------------------------------------------------------------------
+ batch_size  16        |  batches_per_epoch  32         |  grad_acc_batch  [33m1[0m                         
+ optimizer   adam      |  lr                 0.001      |  gpu             True                      
+ gpu_determ  True      |  encoder_lr         [33m2e-05[0m      |  pipeline        [33mmicroblog_train_bm25.1000[0m 
+ lossfn      softmax   |  pos_source         intersect  |  neg_source      run                       
+ sampling    query     |  pos_minrel         1          |  unjudged_rel    0                         
+ num_neg     1         |  margin             0.0                                                     
+
+ valid_ds  microblog                                     
+---------------------------------------------------------
+ rankfn    bm25       |  subset  [33mvalid[0m  |  ranktopk  100 
+
+ valid_pred  reranker                                                                         
+----------------------------------------------------------------------------------------------
+ batch_size  [33m4[0m         |  gpu            True  |  gpu_determ  True                            
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map,p@20,ndcg@10[0m 
+ source      run                                                                              
+
+ test_ds  microblog                                    
+-------------------------------------------------------
+ rankfn   bm25       |  subset  [33mtest[0m  |  ranktopk  100 
+
+ test_pred   reranker                                                                         
+----------------------------------------------------------------------------------------------
+ batch_size  [33m4[0m         |  gpu            True  |  gpu_determ  True                            
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map,p@20,ndcg@10[0m 
+ source      run                                                                              
+
+ pipeline      jesus                                                                                                     
+-------------------------------------------------------------------------------------------------------------------------
+ max_epoch     1000    |  early_stop     20     |  warmup       -1                                                       
+ val_metric    [33mmrr@10[0m  |  purge_weights  True   |  test         [33mTrue[0m                                                     
+ initial_eval  False   |  skip_ds_init   False  |  only_cached  False                                                    
+ onlytest      [33mTrue[0m    |  finetune       [33mTrue[0m   |  savefile     [33mmodel_vbert-train_msmarco-train_microblog-test_microblog[0m 
+[0m
+[02;37m[2020-08-24 22:40:26,560][valid_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+Starting to process general files
+Starting to process general files
+Starting to process general files
+[02;37m[2020-08-24 22:40:26,561][trainer:pairwise][INFO] [0m[32mtrain path: ../data/models/config3/vanilla_transformer_40q_2000d_addrun/bert_bert-base-uncased_tr/pairwise_32x16x1_adam-0.001_encoderlr-2e-05_softmax_pos-intersect-query_neg-run/microblog_train_bm25.100[0m
+[02;37m[2020-08-24 22:40:29,431][trainer:pairwise][INFO] [0m[32mloading prev model : ../data/models/config3/vanilla_transformer_40q_2000d_addrun/bert_bert-base-uncased_tr/pairwise_32x16x1_adam-0.001_encoderlr-2e-05_softmax_pos-intersect-query_neg-run/microblog_train_bm25.1000[0m
+[02;37m[2020-08-24 22:40:29,432][onir][CRITICAL] [0m[01;31mUncaught exception
+Traceback (most recent call last):
+  File "/local/jlovon/miniconda3/envs/openir/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/local/jlovon/miniconda3/envs/openir/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/local/jlovon/catfog-i/OpenNIR/onir/bin/pipeline.py", line 21, in <module>
+    main()
+  File "/local/jlovon/catfog-i/OpenNIR/onir/bin/pipeline.py", line 17, in main
+    context['pipeline'].run()
+  File "/local/jlovon/catfog-i/OpenNIR/onir/pipelines/jesus.py", line 59, in run
+    for train_ctxt in self.trainer.iter_train(only_cached=self.config['only_cached'], _top_epoch=self.config.get('finetune')):
+  File "/local/jlovon/catfog-i/OpenNIR/onir/trainers/base.py", line 79, in iter_train
+    ranker.load(w_path)
+  File "/local/jlovon/catfog-i/OpenNIR/onir/rankers/base.py", line 68, in load
+    self.load_state_dict(torch.load(path), strict=False)
+  File "/local/jlovon/miniconda3/envs/openir/lib/python3.6/site-packages/torch/serialization.py", line 419, in load
+    f = open(f, 'rb')
+FileNotFoundError: [Errno 2] No such file or directory: '../data/models/config3/vanilla_transformer_40q_2000d_addrun/bert_bert-base-uncased_tr/pairwise_32x16x1_adam-0.001_encoderlr-2e-05_softmax_pos-intersect-query_neg-run/microblog_train_bm25.1000/weights/-2.p'[0m

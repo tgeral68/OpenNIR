@@ -1,0 +1,162 @@
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+[02;37m[2020-08-19 12:11:51,871][vocab:wordvec_hash][DEBUG] [0m[37m[starting] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p[0m
+[02;37m[2020-08-19 12:11:57,182][vocab:wordvec_hash][DEBUG] [0m[37m[finished] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p [5.31s][0m
+[02;37m[2020-08-19 12:12:01,764][onir.config][WARNING] [0m[33munknown bm25 arg k1-0.82[0m
+[02;37m[2020-08-19 12:12:01,764][onir.config][WARNING] [0m[33munknown bm25 arg b-0.68[0m
+[02;37m[2020-08-19 12:12:04,589][trainer:pairwise][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-19 12:12:04,748][onir.config][WARNING] [0m[33munknown bm25 arg k1-0.82[0m
+[02;37m[2020-08-19 12:12:04,748][onir.config][WARNING] [0m[33munknown bm25 arg b-0.68[0m
+[02;37m[2020-08-19 12:12:04,749][onir.config][WARNING] [0m[33munknown bm25 arg k1-0.82[0m
+[02;37m[2020-08-19 12:12:04,749][onir.config][WARNING] [0m[33munknown bm25 arg b-0.68[0m
+[02;37m[2020-08-19 12:12:04,753][onir.injector][DEBUG] [0m[37mConfiguration:[0m
+ vocab      wordvec_hash                                                  
+--------------------------------------------------------------------------
+ source     [33mglove[0m         |  variant      [33mcc-42b-300d[0m  |  train     False 
+ hashspace  1000          |  init_stddev  0.5          |  log_miss  False 
+
+ train_ds             msmarco                                                                            
+---------------------------------------------------------------------------------------------------------
+ rankfn               [33mbm25_k1-0.82_b-0.68[0m  |  subset           train    |  ranktopk                 100  
+ special              [33mmspairs[0m              |  index            default  |  init_skip_train10        True 
+ init_skip_train_med  True                 |  init_skip_msrun  True     |  init_skip_doctttttquery  True 
+
+ ranker  knrm                                                                                                                              
+-------------------------------------------------------------------------------------------------------------------------------------------
+ qlen    [33m40[0m                                                |  dlen    2000                                           |  add_runscore  [33mTrue[0m 
+ mus     -0.9,-0.7,-0.5,-0.3,-0.1,0.1,0.3,0.5,0.7,0.9,1.0  |  sigmas  0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.001  |  grad_kernels  True 
+
+ trainer     pairwise                                                                                                                                                                     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ batch_size  16        |  batches_per_epoch  32         |  grad_acc_batch  0                                                                                                              
+ optimizer   adam      |  lr                 0.001      |  gpu             True                                                                                                           
+ gpu_determ  True      |  encoder_lr         0.0        |  pipeline        [33mcovid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs[0m 
+ lossfn      softmax   |  pos_source         intersect  |  neg_source      run                                                                                                            
+ sampling    query     |  pos_minrel         1          |  unjudged_rel    0                                                                                                              
+ num_neg     1         |  margin             0.0                                                                                                                                          
+
+ valid_ds             msmarco                                                                            
+---------------------------------------------------------------------------------------------------------
+ rankfn               [33mbm25_k1-0.82_b-0.68[0m  |  subset           [33mminidev[0m  |  ranktopk                 [33m20[0m   
+ special              [02;37m[empty][0m              |  index            default  |  init_skip_train10        True 
+ init_skip_train_med  True                 |  init_skip_msrun  True     |  init_skip_doctttttquery  True 
+
+ valid_pred  reranker                                                                                
+-----------------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                                   
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map@1000,p@1,p@20,rprec[0m 
+ source      run                                                                                     
+
+ test_ds              msmarco                                                                              
+-----------------------------------------------------------------------------------------------------------
+ rankfn               [33mbm25_k1-0.82_b-0.68[0m  |  subset           [33mjudgeddev[0m  |  ranktopk                 100  
+ special              [02;37m[empty][0m              |  index            default    |  init_skip_train10        True 
+ init_skip_train_med  True                 |  init_skip_msrun  True       |  init_skip_doctttttquery  True 
+
+ test_pred   reranker                                                                                
+-----------------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                                   
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map@1000,p@1,p@20,rprec[0m 
+ source      run                                                                                     
+
+ pipeline      jesus                                                  
+----------------------------------------------------------------------
+ max_epoch     1000    |  early_stop     20     |  warmup       -1    
+ val_metric    [33mmrr@10[0m  |  purge_weights  True   |  test         False 
+ initial_eval  False   |  skip_ds_init   False  |  only_cached  False 
+ onlytest      False   |  finetune       [33mTrue[0m   |  savefile     _     
+[0m
+[02;37m[2020-08-19 12:12:04,754][valid_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-19 12:12:04,755][trainer:pairwise][INFO] [0m[32mtrain path: ../data/models/config2/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m
+[02;37m[2020-08-19 12:12:07,694][trainer:pairwise][INFO] [0m[32mloading prev model : ../data/models/config2/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs[0m
+[02;37m[2020-08-19 12:12:07,702][train_ds:msmarco][WARNING] [0m[33mUsing mspairs; ingoring pair_iter arguments pos_source=intersect neg_source=run sampling=query[0m
+[02;37m[2020-08-19 12:12:07,712][train_ds:msmarco][DEBUG] [0m[37m[starting] loading queries[0m
+[02;37m[2020-08-19 12:12:08,713][train_ds:msmarco][DEBUG] [0m[37m[finished] loading queries: [1.00s] [808531it] [807949.83it/s][0m
+[02;37m[2020-08-19 12:12:08,714][onir.interfaces.java][DEBUG] [0m[37m[starting] initializing jnius[0m
+[02;37m[2020-08-19 12:12:09,512][onir.interfaces.java][DEBUG] [0m[37m[finished] initializing jnius [798ms][0m
+[02;37m[2020-08-19 12:12:12,107][pipeline:jesus][DEBUG] [0m[37m[train] epoch=0 loss=0.1615 acc=0.8926 unsup_acc=0.9121 delta_acc=-0.0195[0m
+[02;37m[2020-08-19 12:12:12,111][valid_ds:msmarco][DEBUG] [0m[37m[starting] loading bm25_k1-0.82_b-0.68:20 from larger batch bm25_k1-0.82_b-0.68:1000[0m
+[02;37m[2020-08-19 12:12:12,416][valid_ds:msmarco][DEBUG] [0m[37m[finished] loading bm25_k1-0.82_b-0.68:20 from larger batch bm25_k1-0.82_b-0.68:1000 [306ms][0m
+[02;37m[2020-08-19 12:12:12,423][valid_ds:msmarco][DEBUG] [0m[37m[starting] loading bm25_k1-0.82_b-0.68:20 from larger batch bm25_k1-0.82_b-0.68:1000[0m
+[02;37m[2020-08-19 12:12:12,789][valid_ds:msmarco][DEBUG] [0m[37m[finished] loading bm25_k1-0.82_b-0.68:20 from larger batch bm25_k1-0.82_b-0.68:1000 [366ms][0m
+[02;37m[2020-08-19 12:12:12,798][valid_ds:msmarco][DEBUG] [0m[37m[starting] loading queries[0m
+[02;37m[2020-08-19 12:12:12,800][valid_ds:msmarco][DEBUG] [0m[37m[finished] loading queries: [1ms] [200it] [299059.11it/s][0m
+[02;37m[2020-08-19 12:12:20,805][valid_ds:msmarco][DEBUG] [0m[37m[starting] loading qrels[0m
+[02;37m[2020-08-19 12:12:20,807][valid_ds:msmarco][DEBUG] [0m[37m[finished] loading qrels [1ms][0m
+[02;37m[2020-08-19 12:12:20,837][pipeline:jesus][INFO] [0m[32m[valid] epoch=0 map@1000=0.1847 [mrr@10=0.1829] ndcg@20=0.2499 p@1=0.0887 p@20=0.0242 rprec=0.0847 runscore_alpha=0.2550 <---[0m
+[02;37m[2020-08-19 12:12:22,581][pipeline:jesus][DEBUG] [0m[37m[train] epoch=1 loss=0.1221 acc=0.9219 unsup_acc=0.9277 delta_acc=-0.0059[0m
+[02;37m[2020-08-19 12:12:25,375][pipeline:jesus][INFO] [0m[32m[valid] epoch=1 map@1000=0.1842 [mrr@10=0.1826] ndcg@20=0.2497 p@1=0.0887 p@20=0.0242 rprec=0.0847 runscore_alpha=0.2516[0m
+[02;37m[2020-08-19 12:12:27,087][pipeline:jesus][DEBUG] [0m[37m[train] epoch=2 loss=0.1366 acc=0.9023 unsup_acc=0.9219 delta_acc=-0.0195[0m
+[02;37m[2020-08-19 12:12:30,100][pipeline:jesus][INFO] [0m[32m[valid] epoch=2 map@1000=0.1864 [mrr@10=0.1846] ndcg@20=0.2515 p@1=0.0887 p@20=0.0242 rprec=0.0847 runscore_alpha=0.2480 <---[0m
+[02;37m[2020-08-19 12:12:31,863][pipeline:jesus][DEBUG] [0m[37m[train] epoch=3 loss=0.1592 acc=0.8984 unsup_acc=0.9180 delta_acc=-0.0195[0m
+[02;37m[2020-08-19 12:12:34,693][pipeline:jesus][INFO] [0m[32m[valid] epoch=3 map@1000=0.1906 [mrr@10=0.1892] ndcg@20=0.2545 p@1=0.0968 p@20=0.0242 rprec=0.0968 runscore_alpha=0.2428 <---[0m
+[02;37m[2020-08-19 12:12:36,654][pipeline:jesus][DEBUG] [0m[37m[train] epoch=4 loss=0.1381 acc=0.9043 unsup_acc=0.9121 delta_acc=-0.0078[0m
+[02;37m[2020-08-19 12:12:39,448][pipeline:jesus][INFO] [0m[32m[valid] epoch=4 map@1000=0.1918 [mrr@10=0.1903] ndcg@20=0.2554 p@1=0.0968 p@20=0.0242 rprec=0.0968 runscore_alpha=0.2390 <---[0m
+[02;37m[2020-08-19 12:12:41,211][pipeline:jesus][DEBUG] [0m[37m[train] epoch=5 loss=0.1283 acc=0.9297 unsup_acc=0.9316 delta_acc=-0.0020[0m
+[02;37m[2020-08-19 12:12:44,035][pipeline:jesus][INFO] [0m[32m[valid] epoch=5 map@1000=0.1924 [mrr@10=0.1909] ndcg@20=0.2560 p@1=0.0968 p@20=0.0242 rprec=0.0968 runscore_alpha=0.2356 <---[0m
+[02;37m[2020-08-19 12:12:45,759][pipeline:jesus][DEBUG] [0m[37m[train] epoch=6 loss=0.1157 acc=0.9336 unsup_acc=0.9336 delta_acc=0.0000[0m
+[02;37m[2020-08-19 12:12:48,582][pipeline:jesus][INFO] [0m[32m[valid] epoch=6 map@1000=0.1897 [mrr@10=0.1881] ndcg@20=0.2539 p@1=0.0968 p@20=0.0242 rprec=0.0968 runscore_alpha=0.2327[0m
+[02;37m[2020-08-19 12:12:50,303][pipeline:jesus][DEBUG] [0m[37m[train] epoch=7 loss=0.1333 acc=0.9258 unsup_acc=0.9199 delta_acc=0.0059[0m
+[02;37m[2020-08-19 12:12:53,092][pipeline:jesus][INFO] [0m[32m[valid] epoch=7 map@1000=0.1955 [mrr@10=0.1936] ndcg@20=0.2582 p@1=0.1048 p@20=0.0242 rprec=0.1048 runscore_alpha=0.2302 <---[0m
+[02;37m[2020-08-19 12:12:54,799][pipeline:jesus][DEBUG] [0m[37m[train] epoch=8 loss=0.1492 acc=0.8906 unsup_acc=0.8965 delta_acc=-0.0059[0m
+[02;37m[2020-08-19 12:12:57,479][pipeline:jesus][INFO] [0m[32m[valid] epoch=8 map@1000=0.1992 [mrr@10=0.1979] ndcg@20=0.2614 p@1=0.1048 p@20=0.0242 rprec=0.1089 runscore_alpha=0.2268 <---[0m
+[02;37m[2020-08-19 12:12:59,043][pipeline:jesus][DEBUG] [0m[37m[train] epoch=9 loss=0.1586 acc=0.8926 unsup_acc=0.8965 delta_acc=-0.0039[0m
+[02;37m[2020-08-19 12:13:01,685][pipeline:jesus][INFO] [0m[32m[valid] epoch=9 map@1000=0.1956 [mrr@10=0.1942] ndcg@20=0.2587 p@1=0.0968 p@20=0.0242 rprec=0.0968 runscore_alpha=0.2241[0m
+[02;37m[2020-08-19 12:13:03,259][pipeline:jesus][DEBUG] [0m[37m[train] epoch=10 loss=0.1238 acc=0.9277 unsup_acc=0.9277 delta_acc=0.0000[0m
+[02;37m[2020-08-19 12:13:05,945][pipeline:jesus][INFO] [0m[32m[valid] epoch=10 map@1000=0.2016 [mrr@10=0.2003] ndcg@20=0.2632 p@1=0.1048 p@20=0.0242 rprec=0.1048 runscore_alpha=0.2212 <---[0m
+[02;37m[2020-08-19 12:13:07,607][pipeline:jesus][DEBUG] [0m[37m[train] epoch=11 loss=0.1309 acc=0.9316 unsup_acc=0.9219 delta_acc=0.0098[0m
+[02;37m[2020-08-19 12:13:10,047][pipeline:jesus][INFO] [0m[32m[valid] epoch=11 map@1000=0.1992 [mrr@10=0.1979] ndcg@20=0.2616 p@1=0.0968 p@20=0.0242 rprec=0.0968 runscore_alpha=0.2181[0m
+[02;37m[2020-08-19 12:13:11,701][pipeline:jesus][DEBUG] [0m[37m[train] epoch=12 loss=0.1236 acc=0.9180 unsup_acc=0.9219 delta_acc=-0.0039[0m
+[02;37m[2020-08-19 12:13:14,395][pipeline:jesus][INFO] [0m[32m[valid] epoch=12 map@1000=0.2101 [mrr@10=0.2094] ndcg@20=0.2700 p@1=0.1129 p@20=0.0242 rprec=0.1169 runscore_alpha=0.2156 <---[0m
+[02;37m[2020-08-19 12:13:16,028][pipeline:jesus][DEBUG] [0m[37m[train] epoch=13 loss=0.1314 acc=0.9219 unsup_acc=0.9199 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:13:18,919][pipeline:jesus][INFO] [0m[32m[valid] epoch=13 map@1000=0.2088 [mrr@10=0.2080] ndcg@20=0.2689 p@1=0.1129 p@20=0.0242 rprec=0.1169 runscore_alpha=0.2131[0m
+[02;37m[2020-08-19 12:13:20,474][pipeline:jesus][DEBUG] [0m[37m[train] epoch=14 loss=0.1122 acc=0.9316 unsup_acc=0.9277 delta_acc=0.0039[0m
+[02;37m[2020-08-19 12:13:23,250][pipeline:jesus][INFO] [0m[32m[valid] epoch=14 map@1000=0.2093 [mrr@10=0.2085] ndcg@20=0.2693 p@1=0.1129 p@20=0.0242 rprec=0.1169 runscore_alpha=0.2106[0m
+[02;37m[2020-08-19 12:13:24,822][pipeline:jesus][DEBUG] [0m[37m[train] epoch=15 loss=0.1211 acc=0.9414 unsup_acc=0.9395 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:13:27,561][pipeline:jesus][INFO] [0m[32m[valid] epoch=15 map@1000=0.2134 [mrr@10=0.2126] ndcg@20=0.2723 p@1=0.1210 p@20=0.0242 rprec=0.1250 runscore_alpha=0.2083 <---[0m
+[02;37m[2020-08-19 12:13:29,160][pipeline:jesus][DEBUG] [0m[37m[train] epoch=16 loss=0.1206 acc=0.9414 unsup_acc=0.9395 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:13:31,864][pipeline:jesus][INFO] [0m[32m[valid] epoch=16 map@1000=0.2175 [mrr@10=0.2154] ndcg@20=0.2752 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.2054 <---[0m
+[02;37m[2020-08-19 12:13:33,495][pipeline:jesus][DEBUG] [0m[37m[train] epoch=17 loss=0.1197 acc=0.9297 unsup_acc=0.9277 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:13:36,226][pipeline:jesus][INFO] [0m[32m[valid] epoch=17 map@1000=0.2146 [mrr@10=0.2126] ndcg@20=0.2728 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.2025[0m
+[02;37m[2020-08-19 12:13:37,868][pipeline:jesus][DEBUG] [0m[37m[train] epoch=18 loss=0.1257 acc=0.9336 unsup_acc=0.9395 delta_acc=-0.0059[0m
+[02;37m[2020-08-19 12:13:40,891][pipeline:jesus][INFO] [0m[32m[valid] epoch=18 map@1000=0.2142 [mrr@10=0.2122] ndcg@20=0.2725 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1994[0m
+[02;37m[2020-08-19 12:13:42,621][pipeline:jesus][DEBUG] [0m[37m[train] epoch=19 loss=0.1190 acc=0.9199 unsup_acc=0.9277 delta_acc=-0.0078[0m
+[02;37m[2020-08-19 12:13:45,604][pipeline:jesus][INFO] [0m[32m[valid] epoch=19 map@1000=0.2092 [mrr@10=0.2072] ndcg@20=0.2687 p@1=0.1210 p@20=0.0242 rprec=0.1250 runscore_alpha=0.1970[0m
+[02;37m[2020-08-19 12:13:47,344][pipeline:jesus][DEBUG] [0m[37m[train] epoch=20 loss=0.1408 acc=0.9141 unsup_acc=0.9141 delta_acc=0.0000[0m
+[02;37m[2020-08-19 12:13:50,171][pipeline:jesus][INFO] [0m[32m[valid] epoch=20 map@1000=0.2077 [mrr@10=0.2065] ndcg@20=0.2675 p@1=0.1210 p@20=0.0242 rprec=0.1250 runscore_alpha=0.1943[0m
+[02;37m[2020-08-19 12:13:51,967][pipeline:jesus][DEBUG] [0m[37m[train] epoch=21 loss=0.1265 acc=0.9258 unsup_acc=0.9258 delta_acc=0.0000[0m
+[02;37m[2020-08-19 12:13:54,854][pipeline:jesus][INFO] [0m[32m[valid] epoch=21 map@1000=0.2136 [mrr@10=0.2118] ndcg@20=0.2718 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1921[0m
+[02;37m[2020-08-19 12:13:56,697][pipeline:jesus][DEBUG] [0m[37m[train] epoch=22 loss=0.1292 acc=0.9180 unsup_acc=0.9238 delta_acc=-0.0059[0m
+[02;37m[2020-08-19 12:13:59,484][pipeline:jesus][INFO] [0m[32m[valid] epoch=22 map@1000=0.2155 [mrr@10=0.2139] ndcg@20=0.2733 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1900[0m
+[02;37m[2020-08-19 12:14:01,131][pipeline:jesus][DEBUG] [0m[37m[train] epoch=23 loss=0.1408 acc=0.9023 unsup_acc=0.8965 delta_acc=0.0059[0m
+[02;37m[2020-08-19 12:14:04,103][pipeline:jesus][INFO] [0m[32m[valid] epoch=23 map@1000=0.2129 [mrr@10=0.2111] ndcg@20=0.2716 p@1=0.1210 p@20=0.0242 rprec=0.1250 runscore_alpha=0.1880[0m
+[02;37m[2020-08-19 12:14:05,872][pipeline:jesus][DEBUG] [0m[37m[train] epoch=24 loss=0.1172 acc=0.9355 unsup_acc=0.9414 delta_acc=-0.0059[0m
+[02;37m[2020-08-19 12:14:08,726][pipeline:jesus][INFO] [0m[32m[valid] epoch=24 map@1000=0.2125 [mrr@10=0.2099] ndcg@20=0.2710 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1857[0m
+[02;37m[2020-08-19 12:14:10,441][pipeline:jesus][DEBUG] [0m[37m[train] epoch=25 loss=0.1361 acc=0.9121 unsup_acc=0.9102 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:14:13,300][pipeline:jesus][INFO] [0m[32m[valid] epoch=25 map@1000=0.2151 [mrr@10=0.2133] ndcg@20=0.2730 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1832[0m
+[02;37m[2020-08-19 12:14:15,044][pipeline:jesus][DEBUG] [0m[37m[train] epoch=26 loss=0.1175 acc=0.9199 unsup_acc=0.9238 delta_acc=-0.0039[0m
+[02;37m[2020-08-19 12:14:17,950][pipeline:jesus][INFO] [0m[32m[valid] epoch=26 map@1000=0.2161 [mrr@10=0.2144] ndcg@20=0.2739 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1812[0m
+[02;37m[2020-08-19 12:14:19,723][pipeline:jesus][DEBUG] [0m[37m[train] epoch=27 loss=0.1200 acc=0.9258 unsup_acc=0.9277 delta_acc=-0.0020[0m
+[02;37m[2020-08-19 12:14:22,686][pipeline:jesus][INFO] [0m[32m[valid] epoch=27 map@1000=0.2148 [mrr@10=0.2138] ndcg@20=0.2730 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1784[0m
+[02;37m[2020-08-19 12:14:24,240][pipeline:jesus][DEBUG] [0m[37m[train] epoch=28 loss=0.1617 acc=0.8809 unsup_acc=0.8867 delta_acc=-0.0059[0m
+[02;37m[2020-08-19 12:14:27,071][pipeline:jesus][INFO] [0m[32m[valid] epoch=28 map@1000=0.2140 [mrr@10=0.2120] ndcg@20=0.2723 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1760[0m
+[02;37m[2020-08-19 12:14:28,852][pipeline:jesus][DEBUG] [0m[37m[train] epoch=29 loss=0.1287 acc=0.9121 unsup_acc=0.9160 delta_acc=-0.0039[0m
+[02;37m[2020-08-19 12:14:31,877][pipeline:jesus][INFO] [0m[32m[valid] epoch=29 map@1000=0.2142 [mrr@10=0.2121] ndcg@20=0.2725 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1739[0m
+[02;37m[2020-08-19 12:14:33,671][pipeline:jesus][DEBUG] [0m[37m[train] epoch=30 loss=0.1161 acc=0.9277 unsup_acc=0.9316 delta_acc=-0.0039[0m
+[02;37m[2020-08-19 12:14:36,548][pipeline:jesus][INFO] [0m[32m[valid] epoch=30 map@1000=0.2146 [mrr@10=0.2127] ndcg@20=0.2728 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1718[0m
+[02;37m[2020-08-19 12:14:38,265][pipeline:jesus][DEBUG] [0m[37m[train] epoch=31 loss=0.1217 acc=0.9199 unsup_acc=0.9180 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:14:41,110][pipeline:jesus][INFO] [0m[32m[valid] epoch=31 map@1000=0.2148 [mrr@10=0.2127] ndcg@20=0.2730 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1698[0m
+[02;37m[2020-08-19 12:14:42,689][pipeline:jesus][DEBUG] [0m[37m[train] epoch=32 loss=0.1156 acc=0.9336 unsup_acc=0.9316 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:14:45,416][pipeline:jesus][INFO] [0m[32m[valid] epoch=32 map@1000=0.2141 [mrr@10=0.2121] ndcg@20=0.2724 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1676[0m
+[02;37m[2020-08-19 12:14:47,133][pipeline:jesus][DEBUG] [0m[37m[train] epoch=33 loss=0.1174 acc=0.9258 unsup_acc=0.9238 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:14:50,005][pipeline:jesus][INFO] [0m[32m[valid] epoch=33 map@1000=0.2138 [mrr@10=0.2118] ndcg@20=0.2722 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1653[0m
+[02;37m[2020-08-19 12:14:51,727][pipeline:jesus][DEBUG] [0m[37m[train] epoch=34 loss=0.1370 acc=0.9023 unsup_acc=0.9004 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:14:54,543][pipeline:jesus][INFO] [0m[32m[valid] epoch=34 map@1000=0.2146 [mrr@10=0.2127] ndcg@20=0.2729 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1635[0m
+[02;37m[2020-08-19 12:14:56,115][pipeline:jesus][DEBUG] [0m[37m[train] epoch=35 loss=0.1230 acc=0.9297 unsup_acc=0.9277 delta_acc=0.0020[0m
+[02;37m[2020-08-19 12:14:59,055][pipeline:jesus][INFO] [0m[32m[valid] epoch=35 map@1000=0.2146 [mrr@10=0.2127] ndcg@20=0.2729 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1620[0m
+[02;37m[2020-08-19 12:15:00,831][pipeline:jesus][DEBUG] [0m[37m[train] epoch=36 loss=0.1271 acc=0.9219 unsup_acc=0.9277 delta_acc=-0.0059[0m
+[02;37m[2020-08-19 12:15:03,663][pipeline:jesus][INFO] [0m[32m[valid] epoch=36 map@1000=0.2146 [mrr@10=0.2127] ndcg@20=0.2729 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.1599[0m
+[02;37m[2020-08-19 12:15:03,663][pipeline:jesus][WARNING] [0m[33mstopping after epoch 36 (20 epochs with no improvement to mrr@10)[0m
+[02;37m[2020-08-19 12:15:03,663][pipeline:jesus][INFO] [0m[32mtop validation epoch=16 mrr@10=0.21538978494623656[0m
+[02;37m[2020-08-19 12:15:03,663][pipeline:jesus][INFO] [0m[32m[jesus: top_train_ctxt] {'epoch': 16, 'batch_size': 16, 'batches_per_epoch': 32, 'num_microbatches': 1, 'device': device(type='cuda'), 'base_path': '../data/models/config2/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs', 'ranker': <function Trainer.iter_train.<locals>.<lambda> at 0x7fbd203ac268>, 'ranker_path': '../data/models/config2/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs/weights/16.p', 'optimizer': <function Trainer.iter_train.<locals>.<lambda> at 0x7fbd203ac1e0>, 'optimizer_path': '../data/models/config2/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs/optimizer/16.p', 'loss': 0.12056343606673181, 'losses': {'data': 0.12056343606673181}, 'acc': 0.94140625, 'unsup_acc': 0.939453125, 'cached': False}[0m
+[02;37m[2020-08-19 12:15:03,664][pipeline:jesus][INFO] [0m[32mvalid run at ../data/models/config2/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs/msmarco_minidev_bm25_k1-0.82_b-0.68.20/runs/36.run[0m
+[02;37m[2020-08-19 12:15:03,664][pipeline:jesus][INFO] [0m[32mvalid epoch=16 map@1000=0.2175 [mrr@10=0.2154] ndcg@20=0.2752 p@1=0.1290 p@20=0.0242 rprec=0.1331 runscore_alpha=0.2054[0m

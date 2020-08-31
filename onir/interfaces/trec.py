@@ -337,3 +337,31 @@ def parse_query_format(file, xml_prefix=None):
     else:
         with open(file, 'rt') as f:
             yield from parse_query_format(f)
+
+
+def parse_query_mbformat(file, xml_prefix=None):
+    if xml_prefix is None:
+        xml_prefix = ''
+    if hasattr(file, 'read'):
+        num, query, reading  = None, None, None
+        for line in file:
+            if line.startswith('**'):
+                continue # translation comment in older formats (e.g., TREC 3 Spanish track)
+            elif line.startswith('</top>'):
+                if query is not None:
+                    yield num, query.replace('\t', ' ').strip()
+                num, query, desc, narr, reading = None, None, None, None, None
+            elif line.startswith('<num>'):
+                num = line[len('<num>'):].replace('Number:', '').replace('</num>','').strip()
+                reading = None
+            elif line.startswith(f'<{xml_prefix}query>'):
+                query = line[len(f'<{xml_prefix}query>'):].replace('</query>','').strip()
+                if query == '':
+                    reading = 'query'
+                else:
+                    reading = None
+            elif reading == 'query':
+                query += line.strip() + ' '
+    else:
+        with open(file, 'rt') as f:
+            yield from parse_query_format(f)

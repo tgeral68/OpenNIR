@@ -1,0 +1,197 @@
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+[02;37m[2020-08-18 18:14:21,027][vocab:wordvec_hash][DEBUG] [0m[37m[starting] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p[0m
+[02;37m[2020-08-18 18:14:25,469][vocab:wordvec_hash][DEBUG] [0m[37m[finished] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p [4.44s][0m
+[02;37m[2020-08-18 18:14:30,621][trainer:pairwise][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-18 18:14:30,653][onir.injector][DEBUG] [0m[37mConfiguration:[0m
+ vocab      wordvec_hash                                                  
+--------------------------------------------------------------------------
+ source     [33mglove[0m         |  variant      [33mcc-42b-300d[0m  |  train     False 
+ hashspace  1000          |  init_stddev  0.5          |  log_miss  False 
+
+ train_ds  covid                                                                  
+----------------------------------------------------------------------------------
+ rankfn    [33mbm25_k1-3.9_b-0.55[0m  |  subset       [33mtrf2-rnd5-quest[0m  |  ranktopk  1000 
+ date      2020-07-16          |  2020_filter  [33mTrue[0m             |  bs_field  text 
+ rr_field  title_abs           |  bs_override  [33mrnd5-query[0m       |  fold      all  
+
+ ranker  knrm                                                                                                                              
+-------------------------------------------------------------------------------------------------------------------------------------------
+ qlen    [33m40[0m                                                |  dlen    2000                                           |  add_runscore  [33mTrue[0m 
+ mus     -0.9,-0.7,-0.5,-0.3,-0.1,0.1,0.3,0.5,0.7,0.9,1.0  |  sigmas  0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.001  |  grad_kernels  True 
+
+ trainer     pairwise                                                                                                    
+-------------------------------------------------------------------------------------------------------------------------
+ batch_size  16        |  batches_per_epoch  32         |  grad_acc_batch  0                                             
+ optimizer   adam      |  lr                 0.001      |  gpu             True                                          
+ gpu_determ  True      |  encoder_lr         0.0        |  pipeline        [33mmsmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m 
+ lossfn      softmax   |  pos_source         intersect  |  neg_source      run                                           
+ sampling    query     |  pos_minrel         1          |  unjudged_rel    0                                             
+ num_neg     1         |  margin             0.0                                                                         
+
+ valid_ds  covid                                                                  
+----------------------------------------------------------------------------------
+ rankfn    [33mbm25_k1-3.9_b-0.55[0m  |  subset       [33mvaf2-rnd5-quest[0m  |  ranktopk  [33m20[0m   
+ date      2020-07-16          |  2020_filter  [33mTrue[0m             |  bs_field  text 
+ rr_field  title_abs           |  bs_override  [33mrnd5-query[0m       |  fold      all  
+
+ valid_pred  reranker                                                                         
+----------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                            
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map,p@20,ndcg@10[0m 
+ source      run                                                                              
+
+ test_ds   covid                                                                
+--------------------------------------------------------------------------------
+ rankfn    [33mbm25_k1-3.9_b-0.55[0m  |  subset       [33mf2-rnd5-quest[0m  |  ranktopk  [33m500[0m  
+ date      2020-07-16          |  2020_filter  [33mTrue[0m           |  bs_field  text 
+ rr_field  title_abs           |  bs_override  [33mrnd5-query[0m     |  fold      all  
+
+ test_pred   reranker                                                                         
+----------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                            
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map,p@20,ndcg@10[0m 
+ source      run                                                                              
+
+ pipeline      jesus                                                  
+----------------------------------------------------------------------
+ max_epoch     1000    |  early_stop     20     |  warmup       -1    
+ val_metric    [33mmrr@10[0m  |  purge_weights  True   |  test         False 
+ initial_eval  False   |  skip_ds_init   False  |  only_cached  False 
+ onlytest      False   |  finetune       [33mTrue[0m   |  savefile     _     
+[0m
+[02;37m[2020-08-18 18:14:30,654][valid_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-18 18:14:30,655][trainer:pairwise][INFO] [0m[32mtrain path: ../data/models/config1/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs[0m
+[02;37m[2020-08-18 18:14:33,539][trainer:pairwise][INFO] [0m[32mloading prev model : ../data/models/config1/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m
+[02;37m[2020-08-18 18:14:33,575][train_ds:covid][DEBUG] [0m[37m[starting] reading bm25_k1-3.9_b-0.55:1000[0m
+[02;37m[2020-08-18 18:14:33,611][train_ds:covid][DEBUG] [0m[37m[finished] reading bm25_k1-3.9_b-0.55:1000 [36ms][0m
+[02;37m[2020-08-18 18:14:34,486][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=0 loss=0.4071 acc=0.6602 unsup_acc=0.6113 delta_acc=0.0488[0m
+[02;37m[2020-08-18 18:14:34,493][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=0 map=0.0269 [mrr@10=0.6426] ndcg@10=0.4253 ndcg@20=0.4390 p@20=0.4944 <---[0m
+[02;37m[2020-08-18 18:14:35,303][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=1 loss=0.4038 acc=0.6445 unsup_acc=0.6074 delta_acc=0.0371[0m
+[02;37m[2020-08-18 18:14:35,306][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=1 map=0.0290 [mrr@10=0.8148] ndcg@10=0.4667 ndcg@20=0.4616 p@20=0.4944 <---[0m
+[02;37m[2020-08-18 18:14:36,127][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=2 loss=0.3881 acc=0.6250 unsup_acc=0.5996 delta_acc=0.0254[0m
+[02;37m[2020-08-18 18:14:36,130][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=2 map=0.0278 [mrr@10=0.7407] ndcg@10=0.4163 ndcg@20=0.4487 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:36,948][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=3 loss=0.3890 acc=0.6367 unsup_acc=0.6328 delta_acc=0.0039[0m
+[02;37m[2020-08-18 18:14:36,951][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=3 map=0.0282 [mrr@10=0.8056] ndcg@10=0.4536 ndcg@20=0.4556 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:37,770][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=4 loss=0.3678 acc=0.6484 unsup_acc=0.6602 delta_acc=-0.0117[0m
+[02;37m[2020-08-18 18:14:37,774][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=4 map=0.0280 [mrr@10=0.6944] ndcg@10=0.4293 ndcg@20=0.4489 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:38,597][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=5 loss=0.4019 acc=0.6270 unsup_acc=0.6289 delta_acc=-0.0020[0m
+[02;37m[2020-08-18 18:14:38,599][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=5 map=0.0278 [mrr@10=0.6667] ndcg@10=0.4314 ndcg@20=0.4490 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:39,416][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=6 loss=0.3848 acc=0.6582 unsup_acc=0.6250 delta_acc=0.0332[0m
+[02;37m[2020-08-18 18:14:39,418][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=6 map=0.0281 [mrr@10=0.7500] ndcg@10=0.4249 ndcg@20=0.4488 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:40,228][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=7 loss=0.4077 acc=0.6250 unsup_acc=0.6191 delta_acc=0.0059[0m
+[02;37m[2020-08-18 18:14:40,231][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=7 map=0.0283 [mrr@10=0.7500] ndcg@10=0.4289 ndcg@20=0.4504 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:41,045][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=8 loss=0.3763 acc=0.6602 unsup_acc=0.6465 delta_acc=0.0137[0m
+[02;37m[2020-08-18 18:14:41,049][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=8 map=0.0278 [mrr@10=0.6481] ndcg@10=0.4219 ndcg@20=0.4441 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:41,880][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=9 loss=0.3700 acc=0.6914 unsup_acc=0.6289 delta_acc=0.0625[0m
+[02;37m[2020-08-18 18:14:41,883][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=9 map=0.0275 [mrr@10=0.6944] ndcg@10=0.4273 ndcg@20=0.4461 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:42,698][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=10 loss=0.3871 acc=0.6445 unsup_acc=0.6387 delta_acc=0.0059[0m
+[02;37m[2020-08-18 18:14:42,704][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=10 map=0.0279 [mrr@10=0.6389] ndcg@10=0.4173 ndcg@20=0.4447 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:43,515][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=11 loss=0.3869 acc=0.6211 unsup_acc=0.6055 delta_acc=0.0156[0m
+[02;37m[2020-08-18 18:14:43,518][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=11 map=0.0285 [mrr@10=0.6852] ndcg@10=0.4456 ndcg@20=0.4485 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:44,332][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=12 loss=0.3726 acc=0.6855 unsup_acc=0.6230 delta_acc=0.0625[0m
+[02;37m[2020-08-18 18:14:44,335][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=12 map=0.0277 [mrr@10=0.6574] ndcg@10=0.4224 ndcg@20=0.4426 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:45,149][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=13 loss=0.3605 acc=0.6660 unsup_acc=0.6348 delta_acc=0.0312[0m
+[02;37m[2020-08-18 18:14:45,152][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=13 map=0.0277 [mrr@10=0.6852] ndcg@10=0.4427 ndcg@20=0.4441 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:45,964][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=14 loss=0.3966 acc=0.6113 unsup_acc=0.6113 delta_acc=0.0000[0m
+[02;37m[2020-08-18 18:14:45,966][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=14 map=0.0292 [mrr@10=0.7037] ndcg@10=0.4695 ndcg@20=0.4533 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:46,789][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=15 loss=0.3660 acc=0.6660 unsup_acc=0.6172 delta_acc=0.0488[0m
+[02;37m[2020-08-18 18:14:46,791][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=15 map=0.0280 [mrr@10=0.6944] ndcg@10=0.4417 ndcg@20=0.4463 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:47,606][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=16 loss=0.3622 acc=0.6777 unsup_acc=0.6230 delta_acc=0.0547[0m
+[02;37m[2020-08-18 18:14:47,609][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=16 map=0.0285 [mrr@10=0.6759] ndcg@10=0.4478 ndcg@20=0.4479 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:48,420][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=17 loss=0.3923 acc=0.6309 unsup_acc=0.6406 delta_acc=-0.0098[0m
+[02;37m[2020-08-18 18:14:48,422][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=17 map=0.0286 [mrr@10=0.7037] ndcg@10=0.4450 ndcg@20=0.4541 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:49,247][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=18 loss=0.3586 acc=0.6660 unsup_acc=0.6348 delta_acc=0.0312[0m
+[02;37m[2020-08-18 18:14:49,249][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=18 map=0.0289 [mrr@10=0.7037] ndcg@10=0.4327 ndcg@20=0.4511 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:50,065][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=19 loss=0.3679 acc=0.6719 unsup_acc=0.6191 delta_acc=0.0527[0m
+[02;37m[2020-08-18 18:14:50,067][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=19 map=0.0293 [mrr@10=0.8056] ndcg@10=0.4577 ndcg@20=0.4577 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:50,873][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=20 loss=0.3689 acc=0.6484 unsup_acc=0.6055 delta_acc=0.0430[0m
+[02;37m[2020-08-18 18:14:50,875][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=20 map=0.0291 [mrr@10=0.7593] ndcg@10=0.4513 ndcg@20=0.4523 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:51,711][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=21 loss=0.3911 acc=0.6270 unsup_acc=0.6270 delta_acc=0.0000[0m
+[02;37m[2020-08-18 18:14:51,715][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=21 map=0.0294 [mrr@10=0.8148] ndcg@10=0.4644 ndcg@20=0.4630 p@20=0.4944 <---[0m
+[02;37m[2020-08-18 18:14:52,532][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=22 loss=0.3661 acc=0.6660 unsup_acc=0.6445 delta_acc=0.0215[0m
+[02;37m[2020-08-18 18:14:52,535][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=22 map=0.0296 [mrr@10=0.8148] ndcg@10=0.4792 ndcg@20=0.4655 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:53,339][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=23 loss=0.3562 acc=0.6680 unsup_acc=0.6035 delta_acc=0.0645[0m
+[02;37m[2020-08-18 18:14:53,343][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=23 map=0.0298 [mrr@10=0.8148] ndcg@10=0.4819 ndcg@20=0.4676 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:54,159][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=24 loss=0.3643 acc=0.6738 unsup_acc=0.6680 delta_acc=0.0059[0m
+[02;37m[2020-08-18 18:14:54,164][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=24 map=0.0301 [mrr@10=0.8704] ndcg@10=0.4829 ndcg@20=0.4698 p@20=0.4944 <---[0m
+[02;37m[2020-08-18 18:14:54,983][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=25 loss=0.3990 acc=0.6328 unsup_acc=0.5957 delta_acc=0.0371[0m
+[02;37m[2020-08-18 18:14:54,986][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=25 map=0.0300 [mrr@10=0.9167] ndcg@10=0.4811 ndcg@20=0.4732 p@20=0.4944 <---[0m
+[02;37m[2020-08-18 18:14:55,794][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=26 loss=0.3755 acc=0.6367 unsup_acc=0.6465 delta_acc=-0.0098[0m
+[02;37m[2020-08-18 18:14:55,799][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=26 map=0.0300 [mrr@10=0.8148] ndcg@10=0.4797 ndcg@20=0.4705 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:56,615][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=27 loss=0.3731 acc=0.6484 unsup_acc=0.6523 delta_acc=-0.0039[0m
+[02;37m[2020-08-18 18:14:56,618][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=27 map=0.0298 [mrr@10=0.8148] ndcg@10=0.4788 ndcg@20=0.4702 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:57,453][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=28 loss=0.3602 acc=0.6719 unsup_acc=0.6016 delta_acc=0.0703[0m
+[02;37m[2020-08-18 18:14:57,459][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=28 map=0.0291 [mrr@10=0.7593] ndcg@10=0.4604 ndcg@20=0.4621 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:58,284][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=29 loss=0.3488 acc=0.6953 unsup_acc=0.6387 delta_acc=0.0566[0m
+[02;37m[2020-08-18 18:14:58,287][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=29 map=0.0295 [mrr@10=0.7593] ndcg@10=0.4671 ndcg@20=0.4641 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:59,102][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=30 loss=0.3575 acc=0.6660 unsup_acc=0.6328 delta_acc=0.0332[0m
+[02;37m[2020-08-18 18:14:59,105][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=30 map=0.0294 [mrr@10=0.7407] ndcg@10=0.4733 ndcg@20=0.4664 p@20=0.4944[0m
+[02;37m[2020-08-18 18:14:59,923][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=31 loss=0.3821 acc=0.6406 unsup_acc=0.6387 delta_acc=0.0020[0m
+[02;37m[2020-08-18 18:14:59,927][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=31 map=0.0307 [mrr@10=0.7593] ndcg@10=0.4665 ndcg@20=0.4709 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:00,740][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=32 loss=0.3580 acc=0.6582 unsup_acc=0.6738 delta_acc=-0.0156[0m
+[02;37m[2020-08-18 18:15:00,743][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=32 map=0.0308 [mrr@10=0.7593] ndcg@10=0.4762 ndcg@20=0.4757 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:01,568][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=33 loss=0.3374 acc=0.7051 unsup_acc=0.6582 delta_acc=0.0469[0m
+[02;37m[2020-08-18 18:15:01,573][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=33 map=0.0315 [mrr@10=0.8148] ndcg@10=0.5223 ndcg@20=0.4905 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:02,390][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=34 loss=0.3447 acc=0.6934 unsup_acc=0.6582 delta_acc=0.0352[0m
+[02;37m[2020-08-18 18:15:02,393][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=34 map=0.0308 [mrr@10=0.8333] ndcg@10=0.4967 ndcg@20=0.4872 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:03,210][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=35 loss=0.3339 acc=0.6895 unsup_acc=0.6016 delta_acc=0.0879[0m
+[02;37m[2020-08-18 18:15:03,212][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=35 map=0.0310 [mrr@10=0.8889] ndcg@10=0.5068 ndcg@20=0.4885 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:04,034][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=36 loss=0.3215 acc=0.7109 unsup_acc=0.6934 delta_acc=0.0176[0m
+[02;37m[2020-08-18 18:15:04,036][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=36 map=0.0317 [mrr@10=0.8889] ndcg@10=0.5119 ndcg@20=0.4914 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:04,856][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=37 loss=0.3685 acc=0.6543 unsup_acc=0.5898 delta_acc=0.0645[0m
+[02;37m[2020-08-18 18:15:04,858][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=37 map=0.0323 [mrr@10=0.8889] ndcg@10=0.5053 ndcg@20=0.4920 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:05,683][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=38 loss=0.3414 acc=0.6738 unsup_acc=0.5977 delta_acc=0.0762[0m
+[02;37m[2020-08-18 18:15:05,685][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=38 map=0.0303 [mrr@10=0.7778] ndcg@10=0.4595 ndcg@20=0.4673 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:06,501][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=39 loss=0.3159 acc=0.7227 unsup_acc=0.6504 delta_acc=0.0723[0m
+[02;37m[2020-08-18 18:15:06,503][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=39 map=0.0301 [mrr@10=0.8333] ndcg@10=0.4838 ndcg@20=0.4743 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:07,314][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=40 loss=0.3074 acc=0.7285 unsup_acc=0.6699 delta_acc=0.0586[0m
+[02;37m[2020-08-18 18:15:07,316][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=40 map=0.0315 [mrr@10=0.8889] ndcg@10=0.4910 ndcg@20=0.4831 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:08,133][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=41 loss=0.2930 acc=0.7363 unsup_acc=0.6250 delta_acc=0.1113[0m
+[02;37m[2020-08-18 18:15:08,137][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=41 map=0.0302 [mrr@10=0.8889] ndcg@10=0.4848 ndcg@20=0.4778 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:08,955][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=42 loss=0.3374 acc=0.6738 unsup_acc=0.6074 delta_acc=0.0664[0m
+[02;37m[2020-08-18 18:15:08,963][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=42 map=0.0303 [mrr@10=0.9444] ndcg@10=0.4877 ndcg@20=0.4818 p@20=0.4944 runscore_alpha=0.2881 <---[0m
+[02;37m[2020-08-18 18:15:09,772][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=43 loss=0.3228 acc=0.6992 unsup_acc=0.6113 delta_acc=0.0879[0m
+[02;37m[2020-08-18 18:15:09,776][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=43 map=0.0297 [mrr@10=0.8889] ndcg@10=0.4839 ndcg@20=0.4771 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:10,589][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=44 loss=0.2687 acc=0.7422 unsup_acc=0.5859 delta_acc=0.1562[0m
+[02;37m[2020-08-18 18:15:10,592][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=44 map=0.0301 [mrr@10=0.8889] ndcg@10=0.4985 ndcg@20=0.4823 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:11,414][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=45 loss=0.3002 acc=0.7168 unsup_acc=0.6660 delta_acc=0.0508[0m
+[02;37m[2020-08-18 18:15:11,417][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=45 map=0.0302 [mrr@10=0.8889] ndcg@10=0.4989 ndcg@20=0.4825 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:12,251][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=46 loss=0.3066 acc=0.7188 unsup_acc=0.6016 delta_acc=0.1172[0m
+[02;37m[2020-08-18 18:15:12,254][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=46 map=0.0304 [mrr@10=0.8889] ndcg@10=0.5002 ndcg@20=0.4838 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:13,063][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=47 loss=0.3149 acc=0.6914 unsup_acc=0.6191 delta_acc=0.0723[0m
+[02;37m[2020-08-18 18:15:13,066][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=47 map=0.0303 [mrr@10=0.8889] ndcg@10=0.5004 ndcg@20=0.4838 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:13,892][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=48 loss=0.2777 acc=0.7500 unsup_acc=0.6113 delta_acc=0.1387[0m
+[02;37m[2020-08-18 18:15:13,895][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=48 map=0.0308 [mrr@10=0.8889] ndcg@10=0.5154 ndcg@20=0.4828 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:14,711][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=49 loss=0.2927 acc=0.7285 unsup_acc=0.6699 delta_acc=0.0586[0m
+[02;37m[2020-08-18 18:15:14,713][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=49 map=0.0305 [mrr@10=0.8704] ndcg@10=0.5355 ndcg@20=0.4806 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:15,524][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=50 loss=0.3001 acc=0.7070 unsup_acc=0.5938 delta_acc=0.1133[0m
+[02;37m[2020-08-18 18:15:15,527][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=50 map=0.0303 [mrr@10=0.8704] ndcg@10=0.5224 ndcg@20=0.4787 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:16,348][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=51 loss=0.3057 acc=0.6953 unsup_acc=0.6348 delta_acc=0.0605[0m
+[02;37m[2020-08-18 18:15:16,350][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=51 map=0.0311 [mrr@10=0.8889] ndcg@10=0.5254 ndcg@20=0.4852 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:17,171][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=52 loss=0.2960 acc=0.7188 unsup_acc=0.6250 delta_acc=0.0938[0m
+[02;37m[2020-08-18 18:15:17,174][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=52 map=0.0311 [mrr@10=0.8889] ndcg@10=0.5247 ndcg@20=0.4866 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:17,982][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=53 loss=0.3098 acc=0.6992 unsup_acc=0.6211 delta_acc=0.0781[0m
+[02;37m[2020-08-18 18:15:17,985][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=53 map=0.0305 [mrr@10=0.8889] ndcg@10=0.5057 ndcg@20=0.4834 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:18,807][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=54 loss=0.3243 acc=0.6797 unsup_acc=0.5898 delta_acc=0.0898[0m
+[02;37m[2020-08-18 18:15:18,810][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=54 map=0.0307 [mrr@10=0.8889] ndcg@10=0.5148 ndcg@20=0.4847 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:19,621][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=55 loss=0.3119 acc=0.7070 unsup_acc=0.6426 delta_acc=0.0645[0m
+[02;37m[2020-08-18 18:15:19,623][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=55 map=0.0294 [mrr@10=0.8333] ndcg@10=0.5063 ndcg@20=0.4768 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:20,434][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=56 loss=0.3116 acc=0.7031 unsup_acc=0.6523 delta_acc=0.0508[0m
+[02;37m[2020-08-18 18:15:20,436][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=56 map=0.0308 [mrr@10=0.8889] ndcg@10=0.5080 ndcg@20=0.4848 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:21,257][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=57 loss=0.2847 acc=0.7422 unsup_acc=0.6484 delta_acc=0.0938[0m
+[02;37m[2020-08-18 18:15:21,259][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=57 map=0.0305 [mrr@10=0.8333] ndcg@10=0.5029 ndcg@20=0.4813 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:22,090][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=58 loss=0.2832 acc=0.7461 unsup_acc=0.6387 delta_acc=0.1074[0m
+[02;37m[2020-08-18 18:15:22,092][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=58 map=0.0306 [mrr@10=0.8333] ndcg@10=0.5025 ndcg@20=0.4811 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:22,899][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=59 loss=0.3186 acc=0.6914 unsup_acc=0.5977 delta_acc=0.0938[0m
+[02;37m[2020-08-18 18:15:22,901][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=59 map=0.0300 [mrr@10=0.8333] ndcg@10=0.5118 ndcg@20=0.4785 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:23,722][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=60 loss=0.3144 acc=0.7031 unsup_acc=0.6211 delta_acc=0.0820[0m
+[02;37m[2020-08-18 18:15:23,724][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=60 map=0.0296 [mrr@10=0.8148] ndcg@10=0.5080 ndcg@20=0.4760 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:24,539][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=61 loss=0.3070 acc=0.7031 unsup_acc=0.6074 delta_acc=0.0957[0m
+[02;37m[2020-08-18 18:15:24,541][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=61 map=0.0303 [mrr@10=0.8148] ndcg@10=0.5196 ndcg@20=0.4792 p@20=0.4944[0m
+[02;37m[2020-08-18 18:15:25,355][pipeline:jesus][DEBUG] [0m[37m[train] [cached] epoch=62 loss=0.2923 acc=0.7207 unsup_acc=0.6367 delta_acc=0.0840[0m
+[02;37m[2020-08-18 18:15:25,359][pipeline:jesus][DEBUG] [0m[37m[valid] [cached] epoch=62 map=0.0311 [mrr@10=0.7593] ndcg@10=0.5316 ndcg@20=0.4831 p@20=0.4944 runscore_alpha=0.3303[0m
+[02;37m[2020-08-18 18:15:25,359][pipeline:jesus][WARNING] [0m[33mstopping after epoch 62 (20 epochs with no improvement to mrr@10)[0m
+[02;37m[2020-08-18 18:15:25,360][pipeline:jesus][INFO] [0m[32mtop validation epoch=42 mrr@10=0.9444444444444444[0m
+[02;37m[2020-08-18 18:15:25,360][pipeline:jesus][INFO] [0m[32m[jesus: top_train_ctxt] {'epoch': 42, 'batch_size': 16, 'batches_per_epoch': 32, 'num_microbatches': 1, 'device': device(type='cuda'), 'base_path': '../data/models/config1/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs', 'ranker': <function _load_ranker.<locals>._wrapped at 0x7f1de80a5950>, 'ranker_path': '../data/models/config1/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs/weights/42.p', 'optimizer': <function _load_optimizer.<locals>._wrapped at 0x7f1de80a5ae8>, 'optimizer_path': '../data/models/config1/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs/optimizer/42.p', 'loss': 0.33742891112342477, 'data_loss': -999, 'losses': {}, 'acc': 0.673828125, 'unsup_acc': 0.607421875, 'cached': True}[0m
+[02;37m[2020-08-18 18:15:25,360][pipeline:jesus][INFO] [0m[32mvalid run at ../data/models/config1/knrm_40q_2000d_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs/covid_vaf2-rnd5-quest_bm25_k1-3.9_b-0.55.20_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs/runs/62.run[0m
+[02;37m[2020-08-18 18:15:25,360][pipeline:jesus][INFO] [0m[32mvalid epoch=42 map=0.0303 [mrr@10=0.9444] ndcg@10=0.4877 ndcg@20=0.4818 p@20=0.4944 runscore_alpha=0.2881[0m

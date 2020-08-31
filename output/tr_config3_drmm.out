@@ -1,0 +1,508 @@
+Better speed can be achieved with apex installed from https://www.github.com/nvidia/apex.
+[02;37m[2020-08-23 18:00:55,229][vocab:wordvec_hash][DEBUG] [0m[37m[starting] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p[0m
+[02;37m[2020-08-23 18:00:58,892][vocab:wordvec_hash][DEBUG] [0m[37m[finished] reading cached at ../data/vocab/wordvec_hash/glove-cc-42b-300d.p [3.66s][0m
+[02;37m[2020-08-23 18:01:04,440][trainer:pairwise][DEBUG] [0m[37musing GPU (deterministic)[0m
+[02;37m[2020-08-23 18:01:04,622][onir.injector][DEBUG] [0m[37mConfiguration:[0m
+ vocab      wordvec_hash                                                  
+--------------------------------------------------------------------------
+ source     [33mglove[0m         |  variant      [33mcc-42b-300d[0m  |  train     False 
+ hashspace  1000          |  init_stddev  0.5          |  log_miss  False 
+
+ train_ds  microblog                                     
+---------------------------------------------------------
+ rankfn    bm25       |  subset  [33mtrain[0m  |  ranktopk  100 
+
+ ranker   drmm                                            
+----------------------------------------------------------
+ qlen     [33m40[0m    |  dlen   2000  |  add_runscore  [33mTrue[0m     
+ hidden   5     |  nbins  11    |  histo         logcount 
+ combine  idf                                             
+
+ trainer     pairwise                                                                                                    
+-------------------------------------------------------------------------------------------------------------------------
+ batch_size  16        |  batches_per_epoch  32         |  grad_acc_batch  0                                             
+ optimizer   adam      |  lr                 0.001      |  gpu             True                                          
+ gpu_determ  True      |  encoder_lr         0.0        |  pipeline        [33mmsmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m 
+ lossfn      softmax   |  pos_source         intersect  |  neg_source      run                                           
+ sampling    query     |  pos_minrel         1          |  unjudged_rel    0                                             
+ num_neg     1         |  margin             0.0                                                                         
+
+ valid_ds  microblog                                     
+---------------------------------------------------------
+ rankfn    bm25       |  subset  [33mvalid[0m  |  ranktopk  100 
+
+ valid_pred  reranker                                                                         
+----------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                            
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map,p@20,ndcg@10[0m 
+ source      run                                                                              
+
+ test_ds  microblog                                    
+-------------------------------------------------------
+ rankfn   bm25       |  subset  [33mtest[0m  |  ranktopk  100 
+
+ test_pred   reranker                                                                         
+----------------------------------------------------------------------------------------------
+ batch_size  64        |  gpu            True  |  gpu_determ  True                            
+ preload     False     |  run_threshold  0     |  measures    [33mmrr@10,ndcg@20,map,p@20,ndcg@10[0m 
+ source      run                                                                              
+
+ pipeline      jesus                                                  
+----------------------------------------------------------------------
+ max_epoch     1000    |  early_stop     20     |  warmup       -1    
+ val_metric    [33mmrr@10[0m  |  purge_weights  True   |  test         False 
+ initial_eval  False   |  skip_ds_init   False  |  only_cached  False 
+ onlytest      False   |  finetune       [33mTrue[0m   |  savefile     _     
+[0m
+[02;37m[2020-08-23 18:01:04,623][valid_pred:reranker][DEBUG] [0m[37musing GPU (deterministic)[0m
+Starting to process general files
+Starting to process general files
+[02;37m[2020-08-23 18:01:04,624][trainer:pairwise][INFO] [0m[32mtrain path: ../data/models/config3/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/microblog_train_bm25.100[0m
+[02;37m[2020-08-23 18:01:07,769][trainer:pairwise][INFO] [0m[32mloading prev model : ../data/models/config3/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs[0m
+Reading qrels train.qrels.txt
+[02;37m[2020-08-23 18:01:07,931][train_ds:microblog][DEBUG] [0m[37m[starting] loading bm25:100 from larger batch bm25:1000[0m
+[02;37m[2020-08-23 18:01:08,104][train_ds:microblog][DEBUG] [0m[37m[finished] loading bm25:100 from larger batch bm25:1000 [173ms][0m
+[02;37m[2020-08-23 18:01:08,197][onir.interfaces.java][DEBUG] [0m[37m[starting] initializing jnius[0m
+[02;37m[2020-08-23 18:01:08,947][onir.interfaces.java][DEBUG] [0m[37m[finished] initializing jnius [750ms][0m
+[02;37m[2020-08-23 18:01:13,446][pipeline:jesus][DEBUG] [0m[37m[train] epoch=0 loss=0.3668 acc=0.6309 unsup_acc=0.6172 delta_acc=0.0137[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:01:13,449][valid_ds:microblog][DEBUG] [0m[37m[starting] loading bm25:100 from larger batch bm25:1000[0m
+[02;37m[2020-08-23 18:01:13,581][valid_ds:microblog][DEBUG] [0m[37m[finished] loading bm25:100 from larger batch bm25:1000 [132ms][0m
+[02;37m[2020-08-23 18:01:13,582][valid_ds:microblog][DEBUG] [0m[37m[starting] loading bm25:100 from larger batch bm25:1000[0m
+[02;37m[2020-08-23 18:01:13,763][valid_ds:microblog][DEBUG] [0m[37m[finished] loading bm25:100 from larger batch bm25:1000 [181ms][0m
+Reading qrels valid.qrels.txt
+[02;37m[2020-08-23 18:01:37,605][pipeline:jesus][INFO] [0m[32m[valid] epoch=0 map=0.0479 [mrr@10=0.9286] ndcg@10=0.2438 ndcg@20=0.2013 p@20=0.2429 runscore_alpha=0.2273 <---[0m
+[02;37m[2020-08-23 18:01:40,550][pipeline:jesus][DEBUG] [0m[37m[train] epoch=1 loss=0.3912 acc=0.6348 unsup_acc=0.6230 delta_acc=0.0117[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:01:55,646][pipeline:jesus][INFO] [0m[32m[valid] epoch=1 map=0.0486 [mrr@10=0.9286] ndcg@10=0.2451 ndcg@20=0.2022 p@20=0.2429 runscore_alpha=0.2260[0m
+[02;37m[2020-08-23 18:01:58,334][pipeline:jesus][DEBUG] [0m[37m[train] epoch=2 loss=0.3764 acc=0.6309 unsup_acc=0.6113 delta_acc=0.0195[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:02:13,225][pipeline:jesus][INFO] [0m[32m[valid] epoch=2 map=0.0486 [mrr@10=0.9286] ndcg@10=0.2451 ndcg@20=0.2022 p@20=0.2429 runscore_alpha=0.2252[0m
+[02;37m[2020-08-23 18:02:15,906][pipeline:jesus][DEBUG] [0m[37m[train] epoch=3 loss=0.3776 acc=0.6465 unsup_acc=0.6172 delta_acc=0.0293[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:02:30,863][pipeline:jesus][INFO] [0m[32m[valid] epoch=3 map=0.0487 [mrr@10=0.9286] ndcg@10=0.2451 ndcg@20=0.2022 p@20=0.2429 runscore_alpha=0.2246[0m
+[02;37m[2020-08-23 18:02:33,508][pipeline:jesus][DEBUG] [0m[37m[train] epoch=4 loss=0.3543 acc=0.6855 unsup_acc=0.6504 delta_acc=0.0352[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:02:48,520][pipeline:jesus][INFO] [0m[32m[valid] epoch=4 map=0.0487 [mrr@10=0.9286] ndcg@10=0.2406 ndcg@20=0.2078 p@20=0.2500 runscore_alpha=0.2237[0m
+[02;37m[2020-08-23 18:02:51,230][pipeline:jesus][DEBUG] [0m[37m[train] epoch=5 loss=0.3823 acc=0.6191 unsup_acc=0.5820 delta_acc=0.0371[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:03:06,258][pipeline:jesus][INFO] [0m[32m[valid] epoch=5 map=0.0492 [mrr@10=0.9286] ndcg@10=0.2456 ndcg@20=0.2085 p@20=0.2500 runscore_alpha=0.2233[0m
+[02;37m[2020-08-23 18:03:08,857][pipeline:jesus][DEBUG] [0m[37m[train] epoch=6 loss=0.3799 acc=0.6328 unsup_acc=0.6016 delta_acc=0.0312[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:03:23,258][pipeline:jesus][INFO] [0m[32m[valid] epoch=6 map=0.0496 [mrr@10=0.9286] ndcg@10=0.2413 ndcg@20=0.2134 p@20=0.2571 runscore_alpha=0.2248[0m
+[02;37m[2020-08-23 18:03:25,751][pipeline:jesus][DEBUG] [0m[37m[train] epoch=7 loss=0.3667 acc=0.6758 unsup_acc=0.6191 delta_acc=0.0566[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:03:40,839][pipeline:jesus][INFO] [0m[32m[valid] epoch=7 map=0.0498 [mrr@10=0.9286] ndcg@10=0.2359 ndcg@20=0.2132 p@20=0.2571 runscore_alpha=0.2264[0m
+[02;37m[2020-08-23 18:03:43,350][pipeline:jesus][DEBUG] [0m[37m[train] epoch=8 loss=0.3857 acc=0.6230 unsup_acc=0.5820 delta_acc=0.0410[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:03:58,402][pipeline:jesus][INFO] [0m[32m[valid] epoch=8 map=0.0511 [mrr@10=0.9286] ndcg@10=0.2384 ndcg@20=0.2204 p@20=0.2714 runscore_alpha=0.2287[0m
+[02;37m[2020-08-23 18:04:01,005][pipeline:jesus][DEBUG] [0m[37m[train] epoch=9 loss=0.3858 acc=0.6465 unsup_acc=0.6074 delta_acc=0.0391[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:04:16,085][pipeline:jesus][INFO] [0m[32m[valid] epoch=9 map=0.0514 [mrr@10=0.9286] ndcg@10=0.2384 ndcg@20=0.2209 p@20=0.2714 runscore_alpha=0.2292[0m
+[02;37m[2020-08-23 18:04:18,706][pipeline:jesus][DEBUG] [0m[37m[train] epoch=10 loss=0.3639 acc=0.6602 unsup_acc=0.6172 delta_acc=0.0430[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:04:34,392][pipeline:jesus][INFO] [0m[32m[valid] epoch=10 map=0.0516 [mrr@10=0.9286] ndcg@10=0.2429 ndcg@20=0.2214 p@20=0.2714 runscore_alpha=0.2297[0m
+[02;37m[2020-08-23 18:04:37,147][pipeline:jesus][DEBUG] [0m[37m[train] epoch=11 loss=0.3775 acc=0.6309 unsup_acc=0.6016 delta_acc=0.0293[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:04:52,924][pipeline:jesus][INFO] [0m[32m[valid] epoch=11 map=0.0517 [mrr@10=0.9286] ndcg@10=0.2424 ndcg@20=0.2211 p@20=0.2714 runscore_alpha=0.2316[0m
+[02;37m[2020-08-23 18:04:55,481][pipeline:jesus][DEBUG] [0m[37m[train] epoch=12 loss=0.3887 acc=0.6133 unsup_acc=0.6035 delta_acc=0.0098[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:05:09,825][pipeline:jesus][INFO] [0m[32m[valid] epoch=12 map=0.0516 [mrr@10=0.9286] ndcg@10=0.2425 ndcg@20=0.2212 p@20=0.2714 runscore_alpha=0.2326[0m
+[02;37m[2020-08-23 18:05:12,359][pipeline:jesus][DEBUG] [0m[37m[train] epoch=13 loss=0.3754 acc=0.6406 unsup_acc=0.6152 delta_acc=0.0254[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:05:27,434][pipeline:jesus][INFO] [0m[32m[valid] epoch=13 map=0.0519 [mrr@10=0.9286] ndcg@10=0.2386 ndcg@20=0.2241 p@20=0.2786 runscore_alpha=0.2356[0m
+[02;37m[2020-08-23 18:05:29,982][pipeline:jesus][DEBUG] [0m[37m[train] epoch=14 loss=0.3621 acc=0.6504 unsup_acc=0.6309 delta_acc=0.0195[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:05:44,975][pipeline:jesus][INFO] [0m[32m[valid] epoch=14 map=0.0529 [mrr@10=0.9286] ndcg@10=0.2497 ndcg@20=0.2255 p@20=0.2786 runscore_alpha=0.2368[0m
+[02;37m[2020-08-23 18:05:47,440][pipeline:jesus][DEBUG] [0m[37m[train] epoch=15 loss=0.3879 acc=0.6191 unsup_acc=0.5703 delta_acc=0.0488[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:06:03,178][pipeline:jesus][INFO] [0m[32m[valid] epoch=15 map=0.0529 [mrr@10=1.0000] ndcg@10=0.2497 ndcg@20=0.2282 p@20=0.2857 runscore_alpha=0.2399 <---[0m
+[02;37m[2020-08-23 18:06:05,695][pipeline:jesus][DEBUG] [0m[37m[train] epoch=16 loss=0.3740 acc=0.6465 unsup_acc=0.5879 delta_acc=0.0586[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:06:20,814][pipeline:jesus][INFO] [0m[32m[valid] epoch=16 map=0.0531 [mrr@10=1.0000] ndcg@10=0.2597 ndcg@20=0.2288 p@20=0.2857 runscore_alpha=0.2445[0m
+[02;37m[2020-08-23 18:06:23,375][pipeline:jesus][DEBUG] [0m[37m[train] epoch=17 loss=0.3467 acc=0.6758 unsup_acc=0.6230 delta_acc=0.0527[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:06:38,448][pipeline:jesus][INFO] [0m[32m[valid] epoch=17 map=0.0538 [mrr@10=1.0000] ndcg@10=0.2642 ndcg@20=0.2317 p@20=0.2857 runscore_alpha=0.2498[0m
+[02;37m[2020-08-23 18:06:41,050][pipeline:jesus][DEBUG] [0m[37m[train] epoch=18 loss=0.3631 acc=0.6582 unsup_acc=0.6113 delta_acc=0.0469[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:06:56,312][pipeline:jesus][INFO] [0m[32m[valid] epoch=18 map=0.0540 [mrr@10=1.0000] ndcg@10=0.2652 ndcg@20=0.2324 p@20=0.2857 runscore_alpha=0.2538[0m
+[02;37m[2020-08-23 18:06:58,852][pipeline:jesus][DEBUG] [0m[37m[train] epoch=19 loss=0.3714 acc=0.6465 unsup_acc=0.6172 delta_acc=0.0293[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:07:13,905][pipeline:jesus][INFO] [0m[32m[valid] epoch=19 map=0.0528 [mrr@10=1.0000] ndcg@10=0.2593 ndcg@20=0.2281 p@20=0.2857 runscore_alpha=0.2560[0m
+[02;37m[2020-08-23 18:07:16,426][pipeline:jesus][DEBUG] [0m[37m[train] epoch=20 loss=0.3608 acc=0.6465 unsup_acc=0.5977 delta_acc=0.0488[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:07:31,435][pipeline:jesus][INFO] [0m[32m[valid] epoch=20 map=0.0531 [mrr@10=1.0000] ndcg@10=0.2690 ndcg@20=0.2287 p@20=0.2857 runscore_alpha=0.2581[0m
+[02;37m[2020-08-23 18:07:33,820][pipeline:jesus][DEBUG] [0m[37m[train] epoch=21 loss=0.3457 acc=0.6816 unsup_acc=0.6367 delta_acc=0.0449[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:07:48,776][pipeline:jesus][INFO] [0m[32m[valid] epoch=21 map=0.0536 [mrr@10=1.0000] ndcg@10=0.2711 ndcg@20=0.2300 p@20=0.2857 runscore_alpha=0.2602[0m
+[02;37m[2020-08-23 18:07:51,337][pipeline:jesus][DEBUG] [0m[37m[train] epoch=22 loss=0.3676 acc=0.6543 unsup_acc=0.5898 delta_acc=0.0645[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:08:06,610][pipeline:jesus][INFO] [0m[32m[valid] epoch=22 map=0.0537 [mrr@10=1.0000] ndcg@10=0.2728 ndcg@20=0.2311 p@20=0.2857 runscore_alpha=0.2628[0m
+[02;37m[2020-08-23 18:08:09,289][pipeline:jesus][DEBUG] [0m[37m[train] epoch=23 loss=0.3676 acc=0.6562 unsup_acc=0.6055 delta_acc=0.0508[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:08:24,344][pipeline:jesus][INFO] [0m[32m[valid] epoch=23 map=0.0536 [mrr@10=1.0000] ndcg@10=0.2711 ndcg@20=0.2300 p@20=0.2857 runscore_alpha=0.2646[0m
+[02;37m[2020-08-23 18:08:26,790][pipeline:jesus][DEBUG] [0m[37m[train] epoch=24 loss=0.3253 acc=0.6855 unsup_acc=0.6543 delta_acc=0.0312[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:08:41,692][pipeline:jesus][INFO] [0m[32m[valid] epoch=24 map=0.0534 [mrr@10=1.0000] ndcg@10=0.2709 ndcg@20=0.2320 p@20=0.2929 runscore_alpha=0.2661[0m
+[02;37m[2020-08-23 18:08:44,223][pipeline:jesus][DEBUG] [0m[37m[train] epoch=25 loss=0.3495 acc=0.6816 unsup_acc=0.6113 delta_acc=0.0703[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:08:59,166][pipeline:jesus][INFO] [0m[32m[valid] epoch=25 map=0.0537 [mrr@10=1.0000] ndcg@10=0.2714 ndcg@20=0.2301 p@20=0.2857 runscore_alpha=0.2683[0m
+[02;37m[2020-08-23 18:09:01,860][pipeline:jesus][DEBUG] [0m[37m[train] epoch=26 loss=0.3573 acc=0.6797 unsup_acc=0.5977 delta_acc=0.0820[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:09:17,821][pipeline:jesus][INFO] [0m[32m[valid] epoch=26 map=0.0539 [mrr@10=0.9286] ndcg@10=0.2731 ndcg@20=0.2336 p@20=0.2857 runscore_alpha=0.2699[0m
+[02;37m[2020-08-23 18:09:20,109][pipeline:jesus][DEBUG] [0m[37m[train] epoch=27 loss=0.3510 acc=0.6562 unsup_acc=0.6113 delta_acc=0.0449[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:09:35,659][pipeline:jesus][INFO] [0m[32m[valid] epoch=27 map=0.0538 [mrr@10=0.9286] ndcg@10=0.2710 ndcg@20=0.2348 p@20=0.2929 runscore_alpha=0.2732[0m
+[02;37m[2020-08-23 18:09:38,341][pipeline:jesus][DEBUG] [0m[37m[train] epoch=28 loss=0.3489 acc=0.6562 unsup_acc=0.5762 delta_acc=0.0801[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:09:53,272][pipeline:jesus][INFO] [0m[32m[valid] epoch=28 map=0.0545 [mrr@10=0.9286] ndcg@10=0.2740 ndcg@20=0.2442 p@20=0.3000 runscore_alpha=0.2758[0m
+[02;37m[2020-08-23 18:09:55,783][pipeline:jesus][DEBUG] [0m[37m[train] epoch=29 loss=0.3558 acc=0.6562 unsup_acc=0.5820 delta_acc=0.0742[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:10:10,855][pipeline:jesus][INFO] [0m[32m[valid] epoch=29 map=0.0545 [mrr@10=0.9286] ndcg@10=0.2743 ndcg@20=0.2467 p@20=0.3000 runscore_alpha=0.2794[0m
+[02;37m[2020-08-23 18:10:13,357][pipeline:jesus][DEBUG] [0m[37m[train] epoch=30 loss=0.3593 acc=0.6406 unsup_acc=0.6035 delta_acc=0.0371[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:10:28,350][pipeline:jesus][INFO] [0m[32m[valid] epoch=30 map=0.0545 [mrr@10=0.9286] ndcg@10=0.2743 ndcg@20=0.2467 p@20=0.3000 runscore_alpha=0.2820[0m
+[02;37m[2020-08-23 18:10:30,849][pipeline:jesus][DEBUG] [0m[37m[train] epoch=31 loss=0.3832 acc=0.6270 unsup_acc=0.5938 delta_acc=0.0332[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:10:45,936][pipeline:jesus][INFO] [0m[32m[valid] epoch=31 map=0.0544 [mrr@10=0.9286] ndcg@10=0.2740 ndcg@20=0.2466 p@20=0.3000 runscore_alpha=0.2826[0m
+[02;37m[2020-08-23 18:10:48,482][pipeline:jesus][DEBUG] [0m[37m[train] epoch=32 loss=0.3572 acc=0.6621 unsup_acc=0.6289 delta_acc=0.0332[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:11:04,219][pipeline:jesus][INFO] [0m[32m[valid] epoch=32 map=0.0544 [mrr@10=0.9286] ndcg@10=0.2738 ndcg@20=0.2464 p@20=0.3000 runscore_alpha=0.2832[0m
+[02;37m[2020-08-23 18:11:06,640][pipeline:jesus][DEBUG] [0m[37m[train] epoch=33 loss=0.3619 acc=0.6621 unsup_acc=0.5898 delta_acc=0.0723[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:11:22,001][pipeline:jesus][INFO] [0m[32m[valid] epoch=33 map=0.0545 [mrr@10=0.9286] ndcg@10=0.2743 ndcg@20=0.2468 p@20=0.3000 runscore_alpha=0.2840[0m
+[02;37m[2020-08-23 18:11:24,601][pipeline:jesus][DEBUG] [0m[37m[train] epoch=34 loss=0.3500 acc=0.6641 unsup_acc=0.5918 delta_acc=0.0723[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:11:40,574][pipeline:jesus][INFO] [0m[32m[valid] epoch=34 map=0.0559 [mrr@10=0.9286] ndcg@10=0.2768 ndcg@20=0.2485 p@20=0.3000 runscore_alpha=0.2856[0m
+[02;37m[2020-08-23 18:11:43,164][pipeline:jesus][DEBUG] [0m[37m[train] epoch=35 loss=0.3375 acc=0.6973 unsup_acc=0.5957 delta_acc=0.1016[0m
+Drmm(
+  (encoder): WordvecEncoder(
+    (embed): Embedding(1918495, 300)
+  )
+  (simmat): InteractionMatrix()
+  (histogram): LogCountHistogram()
+  (hidden_1): Linear(in_features=11, out_features=5, bias=True)
+  (hidden_2): Linear(in_features=5, out_features=1, bias=True)
+  (combine): IdfCombination()
+) <generator object Reranker._reload_batches at 0x7febf002e1a8>
+[02;37m[2020-08-23 18:11:58,254][pipeline:jesus][INFO] [0m[32m[valid] epoch=35 map=0.0561 [mrr@10=0.9286] ndcg@10=0.2775 ndcg@20=0.2534 p@20=0.3071 runscore_alpha=0.2870[0m
+[02;37m[2020-08-23 18:11:58,254][pipeline:jesus][WARNING] [0m[33mstopping after epoch 35 (20 epochs with no improvement to mrr@10)[0m
+[02;37m[2020-08-23 18:11:58,254][pipeline:jesus][INFO] [0m[32mtop validation epoch=15 mrr@10=1.0[0m
+[02;37m[2020-08-23 18:11:58,254][pipeline:jesus][INFO] [0m[32m[jesus: top_train_ctxt] {'epoch': 15, 'batch_size': 16, 'batches_per_epoch': 32, 'num_microbatches': 1, 'device': device(type='cuda'), 'base_path': '../data/models/config3/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/microblog_train_bm25.100', 'ranker': <function Trainer.iter_train.<locals>.<lambda> at 0x7febbdae99d8>, 'ranker_path': '../data/models/config3/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/microblog_train_bm25.100/weights/15.p', 'optimizer': <function Trainer.iter_train.<locals>.<lambda> at 0x7febbdae3f28>, 'optimizer_path': '../data/models/config3/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/microblog_train_bm25.100/optimizer/15.p', 'loss': 0.38785529928281903, 'losses': {'data': 0.38785529928281903}, 'acc': 0.619140625, 'unsup_acc': 0.5703125, 'cached': False}[0m
+[02;37m[2020-08-23 18:11:58,255][pipeline:jesus][INFO] [0m[32mvalid run at ../data/models/config3/drmm_40q_2000d_logcount-11_5h_addrun/wordvec_hash_glove_cc-42b-300d/pairwise_32x16_adam-0.001_softmax_pos-intersect-query_neg-run/microblog_train_bm25.100/microblog_valid_bm25.100/runs/35.run[0m
+[02;37m[2020-08-23 18:11:58,255][pipeline:jesus][INFO] [0m[32mvalid epoch=15 map=0.0529 [mrr@10=1.0000] ndcg@10=0.2497 ndcg@20=0.2282 p@20=0.2857 runscore_alpha=0.2399[0m

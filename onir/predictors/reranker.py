@@ -148,6 +148,7 @@ class PredictorContext:
             this_qid = None
             these_docs = {}
             with util.finialized_file(run_path, 'wt') as f:
+                print(ranker, self.datasource)
                 for qid, did, score in self.pred.iter_scores(ranker, self.datasource, self.device):
                     if qid != this_qid:
                         if this_qid is not None:
@@ -172,9 +173,12 @@ class PredictorContext:
         result['metrics'] = {m: None for m in self.pred.config['measures'].split(',') if m}
         result['metrics_by_query'] = {m: None for m in result['metrics']}
 
+        #print(result['metrics'])
         missing_metrics = self.load_metrics(result)
+        
 
         if missing_metrics:
+            #print("MISSING",missing_metrics)
             measures = set(missing_metrics)
             result['cached'] = False
             qrels = self.pred.dataset.qrels()
@@ -204,6 +208,8 @@ class PredictorContext:
                 ctxt['metrics'][metric] = [float(v) for k, v in plaintext.read_tsv(path_agg) if int(k) == epoch][0]
                 ctxt['metrics_by_query'][metric] = {k: float(v) for k, v in plaintext.read_tsv(path_epoch)}
             else:
+                #print(os.path.exists(path_agg), path_agg)
+                #print(os.path.exists(path_epoch), path_epoch)
                 missing.add(metric)
         return missing
 
