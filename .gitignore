@@ -113,3 +113,4 @@ venv.bak/
 # Output files
 /logs
 /scripts_evals
+/results
