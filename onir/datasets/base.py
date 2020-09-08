@@ -49,7 +49,8 @@ class Dataset:
         return self.path_segment() + '_' + self.vocab.lexicon_path_segment()
 
     def _confirm_dua(self):
-        #self._has_confirmed_dua=True
+        self._has_confirmed_dua=True
+        return self._has_confirmed_dua
         if self._has_confirmed_dua is None and self.DUA is not None:
             self._has_confirmed_dua = util.confirm(self.DUA.format(ds_path=util.path_dataset(self)))
         return self._has_confirmed_dua

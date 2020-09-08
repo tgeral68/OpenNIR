@@ -1,4 +1,7 @@
 dataset=msmarco
 dataset=cord19
+model=drmm
+model=knrm
+model=pacrr
 model=vbert
 model=cedr

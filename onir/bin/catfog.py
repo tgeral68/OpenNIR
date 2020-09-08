@@ -18,17 +18,17 @@ models_ranker = {
 
 models_gpu = {
 	"drmm":"0",
-	"pacrr":"1",
+	"pacrr":"2",
 	"knrm":"0",
-	"vbert":"2",
-	"cedr":"2"
+	"vbert":"3",
+	"cedr":"3"
 }
 
 
 datasets_training = {
 	"msmarco":"msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs",
 	"cord19":"covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs",
-        "microblog":"microblog_train_bm25.1000"
+        "microblog":"microblog_train_bm25.100"
 }
 
 config_dataset = {

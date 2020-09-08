@@ -53,7 +53,6 @@ def load(configuration, extra_args=None, pretty=False):
             else:
                 raise ValueError(f'cannot match argument `{arg}` for `{cls}`')
         context[name] = cls(*args)
-
     if pretty:
         _log_config(configuration.keys(), context)
 

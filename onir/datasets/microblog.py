@@ -1,4 +1,5 @@
-import os
+import os,re
+import json
 from pytools import memoize_method
 from onir import datasets, util, indices
 from onir.interfaces import trec, plaintext
@@ -88,7 +89,6 @@ https://trec.nist.gov/data/cd45/index.html"""
         base_path = util.path_dataset(self)
         idxs = [self.index, self.index_stem, self.doc_store]
         self._init_indices_parallel(idxs, self._init_iter_collection(), force)
-        print("Starting to process general files")        
         train_qrels = os.path.join(base_path, 'train.qrels.txt')
         valid_qrels = os.path.join(base_path, 'valid.qrels.txt')
         test_qrels = os.path.join(base_path, 'test.qrels.txt')
@@ -140,5 +140,11 @@ https://trec.nist.gov/data/cd45/index.html"""
         index = indices.AnseriniIndex(f'../Tweets2013')
         for did in self.logger.pbar(index.docids(), desc='documents'):
             raw_doc = index.get_raw(did)
-            yield indices.RawDoc(did, raw_doc)
+            #dict_doc = json.loads(raw_doc)
+            #print("Doc",dict_doc,raw_doc, dict_doc['text'])
+            pattern='"text":"(.*?)","source":'
+            raw_txt = re.search(pattern,raw_doc).group(1)
+            #print(raw_txt)
+            #print(raw_txt)
+            yield indices.RawDoc(did, raw_txt)
 
