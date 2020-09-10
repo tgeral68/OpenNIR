@@ -4,6 +4,8 @@ from pytools import memoize_method
 from onir import datasets, util, indices
 from onir.interfaces import trec, plaintext
 
+# Generate pipeline
+# python -m onir.bin.catfog config/catastrophic_forgetting/configX
 
 VALIDATION_QIDS=[135, 127, 222, 112, 142, 118, 191, 174, 194, 199, 225, 119, 203, 168]
 TEST_QIDS = [192, 115, 151, 180, 121, 156, 181, 177, 158, 122, 211, 147, 195, 224, 129, 111, 183, 137, 216, 164, 205, 223, 123]
@@ -54,20 +56,8 @@ https://trec.nist.gov/data/cd45/index.html"""
 
     @memoize_method
     def _load_queries_base(self, subset):
-        topics = self._load_topics()
-        _subset=self.config['subset']
-        result = {}
-
-        for qid,_ in topics.items():
-            if _subset=='valid' and qid in VALIDATION_QIDS:
-                result[qid] = topics[qid]
-            elif _subset=='test' and qid in TEST_QIDS:
-                result[qid] = topics[qid]
-            else:
-                result[qid] = topics[qid]
-
-        return result
-        #return topics
+        topics = self._load_topics(subset)
+        return topics
 
     def qrels(self, fmt='dict'):
         return self._load_qrels(self.config['subset'], fmt)
@@ -78,11 +68,16 @@ https://trec.nist.gov/data/cd45/index.html"""
         return trec.read_qrels_fmt(os.path.join(util.path_dataset(self), f'{subset}.qrels.txt'), fmt)
 
     @memoize_method
-    def _load_topics(self):
+    def _load_topics(self,subset):
         result = {}
         for qid, text in plaintext.read_tsv(os.path.join(util.path_dataset(self), 'topics.txt')):
             #nqid=int(qid.replace('MB','').strip())
-            result[qid] = text
+            if subset=='valid' and (int(qid) in VALIDATION_QIDS):
+                result[qid] = text
+            elif subset=='test' and (int(qid) in TEST_QIDS):
+                result[qid] = text
+            elif subset=='train' and (int(qid) not in VALIDATION_QIDS) and (int(qid) not in TEST_QIDS):
+                result[qid] = text
         return result
 
     def init(self, force=False):

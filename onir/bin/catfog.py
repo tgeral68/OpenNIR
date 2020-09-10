@@ -18,10 +18,10 @@ models_ranker = {
 
 models_gpu = {
 	"drmm":"0",
-	"pacrr":"2",
+	"pacrr":"1",
 	"knrm":"0",
-	"vbert":"3",
-	"cedr":"3"
+	"vbert":"2",
+	"cedr":"2"
 }
 
 
