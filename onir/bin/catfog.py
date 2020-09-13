@@ -17,11 +17,11 @@ models_ranker = {
 }
 
 models_gpu = {
-	"drmm":"0",
-	"pacrr":"1",
-	"knrm":"0",
-	"vbert":"2",
-	"cedr":"2"
+	"drmm":"2",
+	"pacrr":"0",
+	"knrm":"2",
+	"vbert":"1",
+	"cedr":"1"
 }
 
 
@@ -48,7 +48,6 @@ _config_name=""
 
 def parse_args(arg_iter, cd=None):
 	for arg in arg_iter:
-	    #print("Parse args",arg)
 	    if '=' in arg:
 	        # assignment, i.e., key=value
 	        key, value = arg.split('=', 1)
@@ -73,7 +72,6 @@ def main():
 
 	params = dict()
 	for key, value in parse_args(sys.argv[1:]):
-		#print(key,value, params.get(key,None))
 		params.setdefault(key,[]).append(value)
 
 
@@ -131,7 +129,6 @@ def main():
 
 			command += f">output/tr_{modelspace}_{model}.out 2>output/tr_{modelspace}_{model}.err "
 
-			#print("Execute-training: ",command,"\n")
 			total_command += command
 
 			#write file
@@ -157,7 +154,6 @@ def main():
 				pipeline.savefile=model_{model}{filename}-test_{ds_test} \
 				>output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err "
 
-				#print("Execute-test", command,"\n")
 				total_command += " && "+command
 				#write file
 				with open(script_name,"a+") as f:

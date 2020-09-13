@@ -90,10 +90,11 @@ http://www.msmarco.org/dataset.aspx"""
         return self.index_stem
 
     def _get_index_for_batchsearch(self):
-        return {
-            'default': self.index_stem,
-            'doctttttquery': self.index_doctttttquery_stem,
-        }[self.config['index']]
+        return self.index_stem
+        # return {
+        #     'default': self.index_stem,
+        #     'doctttttquery': self.index_doctttttquery_stem,
+        # }[self.config['index']]
 
     def qrels(self, fmt='dict'):
         return self._load_qrels(self.config['subset'], fmt=fmt)
@@ -106,6 +107,7 @@ http://www.msmarco.org/dataset.aspx"""
             return trec.read_qrels_fmt(path, fmt)
 
     def load_queries(self) -> dict:
+        
         return self._load_queries_base(self.config['subset'])
 
     @memoize_method

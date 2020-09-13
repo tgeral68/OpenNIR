@@ -148,7 +148,7 @@ class PredictorContext:
             this_qid = None
             these_docs = {}
             with util.finialized_file(run_path, 'wt') as f:
-                print(ranker, self.datasource)
+                #print(ranker, self.datasource)
                 for qid, did, score in self.pred.iter_scores(ranker, self.datasource, self.device):
                     if qid != this_qid:
                         if this_qid is not None:

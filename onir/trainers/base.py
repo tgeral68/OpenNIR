@@ -51,8 +51,7 @@ class Trainer:
         }
 
         files = trainers.misc.PathManager(base_path)
-        self.logger.info(f'train path: {base_path}')
-
+        self.logger.info(f'train path: {base_path}, batches_per_epoch : {context["batches_per_epoch"]}')
         b_count = context['batches_per_epoch'] * context['num_microbatches'] * self.batch_size
 
         ranker = self.ranker.to(self.device)
@@ -134,6 +133,7 @@ class Trainer:
                     for _ in range(context['num_microbatches']):
                         self.epoch = epoch
                         train_batch_result = self.train_batch()
+                        #print("BATCH FINALIZED")
                         losses = train_batch_result['losses']
                         loss_weights = train_batch_result['loss_weights']
                         acc = train_batch_result.get('acc')

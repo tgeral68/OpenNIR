@@ -64,7 +64,6 @@ https://trec.nist.gov/data/cd45/index.html"""
 
     @memoize_method
     def _load_qrels(self, subset, fmt):
-        print("Reading qrels",f'{subset}.qrels.txt')
         return trec.read_qrels_fmt(os.path.join(util.path_dataset(self), f'{subset}.qrels.txt'), fmt)
 
     @memoize_method
@@ -136,10 +135,7 @@ https://trec.nist.gov/data/cd45/index.html"""
         for did in self.logger.pbar(index.docids(), desc='documents'):
             raw_doc = index.get_raw(did)
             #dict_doc = json.loads(raw_doc)
-            #print("Doc",dict_doc,raw_doc, dict_doc['text'])
             pattern='"text":"(.*?)","source":'
             raw_txt = re.search(pattern,raw_doc).group(1)
-            #print(raw_txt)
-            #print(raw_txt)
             yield indices.RawDoc(did, raw_txt)
 

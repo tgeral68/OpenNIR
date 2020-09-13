@@ -82,7 +82,6 @@ class JesusPipeline(pipelines.BasePipeline):
             valid_ctxt = dict(validator(train_ctxt))
 
             message = self._build_valid_msg(valid_ctxt)
-            #print("METRIC!", valid_ctxt['metrics'])
             if valid_ctxt['epoch'] >= self.config['warmup']:
                 if self.config['val_metric'] == '':
                     top_epoch = valid_ctxt['epoch']

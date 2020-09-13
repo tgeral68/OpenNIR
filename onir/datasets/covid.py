@@ -51,7 +51,6 @@ for i in range(len(_FOLDS)):
 FOLDS['all'] = _ALL
 
 
-#print(FOLDS)
 
 @datasets.register('covid')
 class CovidDataset(datasets.IndexBackedDataset):
@@ -109,7 +108,6 @@ https://ir.nist.gov/covidSubmit/"""
         path = os.path.join(util.path_dataset(self), f'{fold}-{rnd}.qrels')
         if os.path.exists(path):
             aaa = trec.read_qrels_fmt(path, fmt)
-            #print(aaa)
             return aaa
         self.logger.info(f'missing qrels for {rnd} -- returning empty qrels')
         return {}
@@ -142,9 +140,7 @@ https://ir.nist.gov/covidSubmit/"""
         fold, rnd, fields = subset.split('-', 2)
         fields = fields.split('-')
         path = os.path.join(util.path_dataset(self), f'rnd5.tsv')
-        #print("FOLD ID", FOLDS[fold])
         filter_queries = {str(qid): qtext for qid, qtype, qtext in plaintext.read_tsv(path) if qtype in fields and str(qid) in FOLDS[fold]}
-        #print("FOLD:",fold, filter_queries)
         return filter_queries
         
 
@@ -154,7 +150,6 @@ https://ir.nist.gov/covidSubmit/"""
     
 
     def init(self, force=False):
-        #print("FOLD",self.config['subset'])
         needs_docs = []
         for index in [self.index_stem, self.index_stem_2020, self.doc_store]:
             if force or not index.built():
@@ -252,7 +247,6 @@ https://ir.nist.gov/covidSubmit/"""
                 all_qrels = trec.read_qrels_dict(qrels_file)
                 
                 fold_qrels = {qid: dids for qid, dids in all_qrels.items() if str(qid) in FOLDS[fold]}
-                #print("FOLD qrels! ", fold_qrels)
                 trec.write_qrels_dict(fold_qrels_file, fold_qrels)
 
 
@@ -299,7 +293,6 @@ https://ir.nist.gov/covidSubmit/"""
                     heads = ''
                     if row['pmc_json_files'] and isinstance(row['pmc_json_files'],str):
                         path = row['pmc_json_files']
-                        #print("PATHHH", path)
                         fulltextfile = path.split("/")[0]
                         
                         #path = os.path.join(row['full_text_file'], 'pmc_json', row['pmcid'] + '.xml.json')
@@ -311,7 +304,6 @@ https://ir.nist.gov/covidSubmit/"""
                         path = row['pdf_json_files'].split(';')[0].strip()
 
                         #path = os.path.join(row['full_text_file'], 'pdf_json', row['sha'].split(';')[0].strip() + '.json')
-                        #print("PATHHH", path)
                         fulltextfile = path.split("/")[0]
                         data = json.load(fulltexts[fulltextfile].extractfile(path))
                         if 'body_text' in data:
