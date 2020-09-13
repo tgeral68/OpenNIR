@@ -1,0 +1,6 @@
+train_ds=msmarco
+train_ds.subset=train
+train_ds.special=mspairs
+train_ds.ranktopk=100
+
+train_ds.rankfn=bm25_k1-0.82_b-0.68

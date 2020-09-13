@@ -1,0 +1,4 @@
+valid_ds=msmarco
+valid_ds.subset=dev
+valid_ds.ranktopk=1000
+valid_pred.measures=mrr@10,ndcg@20,map,p@1,rprec

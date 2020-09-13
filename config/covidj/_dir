@@ -1,6 +1,7 @@
 dataset=covid
 dataset.subset=rnd5-query
-pipeline.val_metric=mrr@10
+pipeline.val_metric=p@20
+trainer.lossfn=hinge
 ranker.qlen=40
 
 train_ds=covid
@@ -14,7 +15,7 @@ train_ds.rankfn=bm25_k1-3.9_b-0.55
 valid_ds=covid
 valid_ds.subset=rnd5-quest
 valid_ds.ranktopk=20
-valid_pred.measures=mrr@10,ndcg@20,map,p@20,ndcg@10
+valid_pred.measures=ndcg@20,map@100,p@20,ndcg@10
 valid_ds.2020_filter=True
 valid_ds.rr_field=title_abs
 valid_ds.bs_field=text
@@ -23,8 +24,8 @@ valid_ds.rankfn=bm25_k1-3.9_b-0.55
 
 test_ds=covid
 test_ds.subset=rnd5-quest
-test_ds.ranktopk=500
-test_pred.measures=mrr@10,ndcg@20,map,p@20,ndcg@10
+test_ds.ranktopk=100
+test_pred.measures=ndcg@20,map@100,p@20,ndcg@10
 test_ds.2020_filter=True
 test_ds.rr_field=title_abs
 test_ds.bs_field=text

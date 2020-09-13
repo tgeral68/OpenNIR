@@ -1,5 +1,6 @@
 dataset=msmarco
-pipeline.val_metric=mrr@10
+pipeline.val_metric=p@20
+trainer.lossfn=hinge
 ranker.qlen=40
 ./train
 ./minidev

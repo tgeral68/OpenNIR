@@ -1,5 +1,5 @@
 valid_ds=msmarco
 valid_ds.subset=minidev
 valid_ds.ranktopk=20
-valid_pred.measures=ndcg@20,map@100,p@1,p@20,rprec
+valid_pred.measures=mrr@10,ndcg@20,map@1000,p@1,p@20,rprec
 valid_ds.rankfn=bm25_k1-0.82_b-0.68
