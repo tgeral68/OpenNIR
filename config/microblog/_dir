@@ -4,19 +4,19 @@ trainer.lossfn=hinge
 ranker.qlen=40
 
 train_ds=microblog
-train_ds.rankfn=bm25
 train_ds.subset=train
 train_ds.ranktopk=100
+train_ds.rankfn=bm25_k1-0.2_b-0.95
 train_pred.measures=ndcg@20,map@100,p@20,ndcg@10
 
 valid_ds=microblog
 valid_ds.ranktopk=100
-valid_ds.rankfn=bm25
 valid_ds.subset=valid
+valid_ds.rankfn=bm25_k1-0.2_b-0.95
 valid_pred.measures=ndcg@20,map@100,p@20,ndcg@10
 
 test_ds=microblog
 test_ds.ranktopk=100
 test_pred.measures=ndcg@20,map@100,p@20,ndcg@10
-test_ds.rankfn=bm25
+test_ds.rankfn=bm25_k1-0.2_b-0.95
 test_ds.subset=test
