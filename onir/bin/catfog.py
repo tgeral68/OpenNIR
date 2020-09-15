@@ -17,8 +17,8 @@ models_ranker = {
 }
 
 models_gpu = {
-	"drmm":"1",
-	"pacrr":"2",
+	"drmm":"0",
+	"pacrr":"0",
 	"knrm":"0",
 	"vbert":"3",
 	"cedr":"3"
@@ -113,18 +113,9 @@ def main():
 			ranker = models_ranker[model]
 
 			# do training of model with dataset in modelspace (not testing)
-			command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.pipeline pipeline=jesus \
-			modelspace={modelspace} \
-			data_dir=../data  \
-			vocab.source=glove \
-			vocab.variant=cc-42b-300d \
-			{models_ranker[model]} \
-			ranker.add_runscore=True \
-			{config_dataset[ds_train]} "
+			command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} ranker.add_runscore=True {config_dataset[ds_train]} "
 			if prev_ds is not None:
-				ncommand = f"pipeline.finetune=true \
-				trainer.pipeline={datasets_training[prev_ds]} "
-
+				ncommand = f"pipeline.finetune=true trainer.pipeline={datasets_training[prev_ds]} "
 				command+= ncommand
 
 			command += f">output/tr_{modelspace}_{model}.out 2>output/tr_{modelspace}_{model}.err "
@@ -138,26 +129,12 @@ def main():
 
 			for ds_test in datasets: 
 				# test over this dataset
-				command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.pipeline pipeline=jesus \
-				modelspace={modelspace} \
-				data_dir=../data  \
-				vocab.source=glove \
-				vocab.variant=cc-42b-300d \
-				{models_ranker[model]} \
-				ranker.add_runscore=True \
-				{config_dataset[ds_train]} \
-				{config_test_dataset[ds_test]} \
-				pipeline.test=true \
-				pipeline.onlytest=true \
-				pipeline.finetune=true \
-				trainer.pipeline={datasets_training[ds_train]} \
-				pipeline.savefile=model_{model}{filename}-test_{ds_test} \
-				>output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err "
+				command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} 	ranker.add_runscore=True {config_dataset[ds_train]} {config_test_dataset[ds_test]} pipeline.test=true 	pipeline.onlytest=true 	pipeline.finetune=true 	trainer.pipeline={datasets_training[ds_train]} 	pipeline.savefile=model_{model}{filename}-test_{ds_test} >output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err "
 
 				total_command += " && "+command
 				#write file
 				with open(script_name,"a+") as f:
-					f.write(f"# Testing {ds_test}\n{command}&\n")
+					f.write(f"# Testing {ds_test}\n{command}\nwait\n")
 
 
 			#write file
@@ -166,13 +143,7 @@ def main():
 
 			# with & to run independently
 			if model=="vbert":
-				n_command = f"CUDA_VISIBLE_DEVICES=2 python -m onir.bin.extract_bert_weights \
-				modelspace={modelspace} pipeline.bert_weights={modelspace} \
-				{config_dataset[ds_train]} \
-				pipeline.test=true \
-				{models_ranker[model]} \
-				pipeline.overwrite=True \
-				ranker.add_runscore=True data_dir=../data "
+				n_command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.extract_bert_weights modelspace={modelspace} pipeline.bert_weights={modelspace} {config_dataset[ds_train]} pipeline.test=true {models_ranker[model]} 	pipeline.overwrite=True ranker.add_runscore=True data_dir=../data "
 				prev_command = total_command+n_command
 
 				#write file
