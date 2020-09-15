@@ -1,6 +1,7 @@
 
 test_ds=microblog
 test_ds.ranktopk=100
-test_pred.measures=mrr@10,ndcg@20,map,p@20,ndcg@10
-test_ds.rankfn=bm25
+test_pred.measures=ndcg@20,map@100,p@20,ndcg@10
+test_ds.rankfn=bm25_k1-0.2_b-0.95
 test_ds.subset=test
+
