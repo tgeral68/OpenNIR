@@ -20,8 +20,8 @@ models_gpu = {
 	"drmm":"0",
 	"pacrr":"0",
 	"knrm":"0",
-	"vbert":"3",
-	"cedr":"3"
+	"vbert":"0",
+	"cedr":"0"
 }
 
 
@@ -94,7 +94,6 @@ def main():
 	train_filename=""
 	prev_ds=None
 	filename=""
-	prev_command=None
 	for _idx,ds_train in enumerate(datasets):
 
 		
@@ -105,10 +104,6 @@ def main():
 			if model=="cedr":
 				script_name = f"scripts_evals/{modelspace}_vbert.sh"
 
-			total_command=""
-
-			if model=="cedr":
-				total_command=prev_command + " && "
 
 			ranker = models_ranker[model]
 
@@ -120,7 +115,6 @@ def main():
 
 			command += f">output/tr_{modelspace}_{model}.out 2>output/tr_{modelspace}_{model}.err "
 
-			total_command += command
 
 			#write file
 			with open(script_name,"a+") as f:
@@ -131,7 +125,6 @@ def main():
 				# test over this dataset
 				command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} 	ranker.add_runscore=True {config_dataset[ds_train]} {config_test_dataset[ds_test]} pipeline.test=true 	pipeline.onlytest=true 	pipeline.finetune=true 	trainer.pipeline={datasets_training[ds_train]} 	pipeline.savefile=model_{model}{filename}-test_{ds_test} >output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err "
 
-				total_command += " && "+command
 				#write file
 				with open(script_name,"a+") as f:
 					f.write(f"# Testing {ds_test}\n{command}\nwait\n")
@@ -144,18 +137,10 @@ def main():
 			# with & to run independently
 			if model=="vbert":
 				n_command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.extract_bert_weights modelspace={modelspace} pipeline.bert_weights={modelspace} {config_dataset[ds_train]} pipeline.test=true {models_ranker[model]} 	pipeline.overwrite=True ranker.add_runscore=True data_dir=../data "
-				prev_command = total_command+n_command
 
 				#write file
 				with open(script_name,"a+") as f:
 					f.write(f"{n_command}&\nwait\n")
-			# elif model=="cedr":
-			# 	#this one takes the longest, so its our wall
-			# 	os.system(total_command) # wait until cedr finish to go to the next datasets
-			# else:
-			# 	final_command = f" {total_command} &"
-			# 	os.system(final_command)
-			# 	#print(final_command.split())
 
 
 		#when model finishs
@@ -171,5 +156,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
