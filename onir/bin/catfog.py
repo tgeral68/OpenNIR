@@ -87,7 +87,9 @@ def main():
 	old_ranker = models_ranker['cedr']
 	models_ranker['cedr'] = old_ranker + f" vocab.bert_weights={modelspace} "
 
-
+	train_section = dict()
+	test_section = dict()
+	_cnt = dict()
 	# output files
 	for model in models:
 		with open(f"scripts_evals/{modelspace}_{model}.sh","w") as f:
@@ -97,16 +99,17 @@ def main():
 	prev_ds=None
 	filename=""
 	for _idx,ds_train in enumerate(datasets):
-
-		
 		filename += f"-train_{ds_train}"
+		
+		fnames = dict()
 
 		for model in models:
 			script_name = f"scripts_evals/{modelspace}_{model}.sh"
+			
 			if model=="cedr":
 				script_name = f"scripts_evals/{modelspace}_vbert.sh"
 
-
+			fnames[model] = script_name
 			ranker = models_ranker[model]
 
 			# do training of model with dataset in modelspace (not testing)
@@ -117,36 +120,52 @@ def main():
 
 			command += f">output/tr_{modelspace}_{model}.out 2>output/tr_{modelspace}_{model}.err "
 
-
 			#write file
-			with open(script_name,"a+") as f:
-				f.write(f"# Training {ds_train}\n{command}\nwait\n")
-
+			
+			if model=="cedr":
+				pretrain = train_section.get("vbert","")
+				train_section["vbert"] = pretrain + f"# Training {ds_train}\n{command}\nwait\n"
+			else:
+				pretrain = train_section.get(model,"")
+				train_section[model] = pretrain + f"# Training {ds_train}\n{command}\nwait\n"
+			#with open(script_name,"a+") as f:
+			#	f.write(f"# Training {ds_train}\n{command}\nwait\n")
 
 			for ds_test in datasets: 
 				current_gpu = models_gpu[model]
-				if pivot_gpu is not None and ds_test=="msmarco":
-					current_gpu = pivot_gpu
+				#if pivot_gpu is not None and ds_test=="msmarco":
+				#	current_gpu = pivot_gpu
 				output_f = f"results/model_{model}{filename}-test_{ds_test}"
                 #test over this dataset
 				command = f"FILE='{output_f}'\nif [ -f $FILE ]; then\n\techo 'this file {output_f} exists!'\nelse\n\tCUDA_VISIBLE_DEVICES={current_gpu} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} 	ranker.add_runscore=True {config_dataset[ds_train]} {config_test_dataset[ds_test]} pipeline.test=true 	pipeline.onlytest=true 	pipeline.finetune=true 	trainer.pipeline={datasets_training[ds_train]} 	pipeline.savefile=model_{model}{filename}-test_{ds_test} >output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err\nfi &"
-
+				
 				#write file
-				with open(script_name,"a+") as f:
-					f.write(f"# Testing {ds_test}\n{command}\n\n")
+
+				_model = model
+				if model =="cedr":
+					_model = "vbert"
+				pretest = test_section.get(_model,"")
+				_cnttmp =_cnt.get(_model,0)
+				if _cnttmp%2==1:
+					test_section[_model] = pretest+f"# Testing {ds_test}\n{command}\nwait\n"
+				else:
+					test_section[_model] = pretest+f"# Testing {ds_test}\n{command}\n\n"	
+				_cnt[_model] = _cnttmp + 1
+				#with open(script_name,"a+") as f:
+				#	f.write(f"# Testing {ds_test}\n{command}\n\n")
 
 
 			#write file
-			with open(script_name,"a+") as f:
-				f.write("wait\n\n")
+			#with open(script_name,"a+") as f:
+			#	f.write("wait\n\n")
 
 			# with & to run independently
 			if model=="vbert":
 				n_command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.extract_bert_weights modelspace={modelspace} pipeline.bert_weights={modelspace} {config_dataset[ds_train]} pipeline.test=true {models_ranker[model]} 	pipeline.overwrite=True ranker.add_runscore=True data_dir=../data "
-
 				#write file
-				with open(script_name,"a+") as f:
-					f.write(f"{n_command}&\nwait\n")
+				train_section[model] = train_section[model] + f"{n_command}&\nwait\n"
+				#with open(script_name,"a+") as f:
+				#	f.write(f"{n_command}&\nwait\n")
 
 
 		#when model finishs
@@ -159,9 +178,17 @@ def main():
 				if model!="cedr":
 					f.write(f"bash scripts_evals/{modelspace}_{model}.sh &\n")
 
+	pretrain = ""
+	pretest = ""
+	for model in models:
+		if model =="cedr":
+			continue
+		with open(fnames[model],"a+") as f:
+			#print(train_section[model], fnames[model])
+			f.write(pretrain+train_section[model])
+			f.write(pretest+test_section[model])
+
 
 if __name__ == '__main__':
     main()
-
-
 
