@@ -1,0 +1,8 @@
+dataset=cord19
+dataset=microblog
+dataset=msmarco
+model=drmm
+model=pacrr
+model=knrm
+model=vbert
+model=cedr

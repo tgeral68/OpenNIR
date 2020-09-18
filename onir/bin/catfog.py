@@ -20,8 +20,8 @@ models_gpu = {
 	"drmm":"0",
 	"pacrr":"0",
 	"knrm":"0",
-	"vbert":"0",
-	"cedr":"0"
+	"vbert":"2",
+	"cedr":"2"
 }
 
 pivot_gpu = None
@@ -129,11 +129,11 @@ def main():
 					current_gpu = pivot_gpu
 				output_f = f"results/model_{model}{filename}-test_{ds_test}"
                 #test over this dataset
-				command = f"FILE='{output_f}'\nif [ -f $FILE ]; then\n\techo 'this file {output_f} exists!'\nelse\n\tCUDA_VISIBLE_DEVICES={current_gpu} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} 	ranker.add_runscore=True {config_dataset[ds_train]} {config_test_dataset[ds_test]} pipeline.test=true 	pipeline.onlytest=true 	pipeline.finetune=true 	trainer.pipeline={datasets_training[ds_train]} 	pipeline.savefile=model_{model}{filename}-test_{ds_test} >output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err\nfi "
+				command = f"FILE='{output_f}'\nif [ -f $FILE ]; then\n\techo 'this file {output_f} exists!'\nelse\n\tCUDA_VISIBLE_DEVICES={current_gpu} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} 	ranker.add_runscore=True {config_dataset[ds_train]} {config_test_dataset[ds_test]} pipeline.test=true 	pipeline.onlytest=true 	pipeline.finetune=true 	trainer.pipeline={datasets_training[ds_train]} 	pipeline.savefile=model_{model}{filename}-test_{ds_test} >output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err\nfi &"
 
 				#write file
 				with open(script_name,"a+") as f:
-					f.write(f"# Testing {ds_test}\n{command}\nwait\n")
+					f.write(f"# Testing {ds_test}\n{command}\n\n")
 
 
 			#write file
