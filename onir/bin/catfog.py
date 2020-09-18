@@ -24,23 +24,25 @@ models_gpu = {
 	"cedr":"0"
 }
 
+pivot_gpu = None
+pivot_gpu = "3" # to send some test to free gpu
 
 datasets_training = {
 	"msmarco":"msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs",
 	"cord19":"covid_trf2-rnd5-quest_bm25_k1-3.9_b-0.55.1000_2020-07-16_bs-text_2020filter_bsoverride-rnd5-query_rr-title_abs",
-        "microblog":"microblog_train_bm25_k1-0.2_b-0.95.100"
+	"microblog":"microblog_train_bm25_k1-0.2_b-0.95.100"
 }
 
 config_dataset = {
 	"msmarco":"config/msmarco",
 	"cord19":"config/covidj/fold2",
-        "microblog":"config/microblog"
+	"microblog":"config/microblog"
 }
 
 config_test_dataset = {
 	"msmarco":"config/msmarco/judgeddev",
 	"cord19":"config/covidj/test2",
-        "microblog":"config/microblog/test"
+	"microblog":"config/microblog/test"
 }
 
 _config_name=""
@@ -122,9 +124,12 @@ def main():
 
 
 			for ds_test in datasets: 
+				current_gpu = models_gpu[model]
+				if pivot_gpu is not None and ds_test=="msmarco":
+					current_gpu = pivot_gpu
 				output_f = f"results/model_{model}{filename}-test_{ds_test}"
                 #test over this dataset
-				command = f"FILE='{output_f}'\nif [ -f $FILE ]; then\n\techo 'this file {output_f} exists!'\nelse\n\tCUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} 	ranker.add_runscore=True {config_dataset[ds_train]} {config_test_dataset[ds_test]} pipeline.test=true 	pipeline.onlytest=true 	pipeline.finetune=true 	trainer.pipeline={datasets_training[ds_train]} 	pipeline.savefile=model_{model}{filename}-test_{ds_test} >output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err\nfi "
+				command = f"FILE='{output_f}'\nif [ -f $FILE ]; then\n\techo 'this file {output_f} exists!'\nelse\n\tCUDA_VISIBLE_DEVICES={current_gpu} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} 	ranker.add_runscore=True {config_dataset[ds_train]} {config_test_dataset[ds_test]} pipeline.test=true 	pipeline.onlytest=true 	pipeline.finetune=true 	trainer.pipeline={datasets_training[ds_train]} 	pipeline.savefile=model_{model}{filename}-test_{ds_test} >output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err\nfi "
 
 				#write file
 				with open(script_name,"a+") as f:
