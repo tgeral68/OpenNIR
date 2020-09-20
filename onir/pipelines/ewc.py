@@ -4,8 +4,8 @@ from onir import util, pipelines
 import onir
 import pickle
 
-@pipelines.register('jesus')
-class JesusPipeline(pipelines.BasePipeline):
+@pipelines.register('ewc')
+class EWCPipeline(pipelines.BasePipeline):
     name = None
 
     @staticmethod
@@ -23,6 +23,7 @@ class JesusPipeline(pipelines.BasePipeline):
             'onlytest': False,
             'finetune': False,
             'savefile': '_',
+            'dataset': '',
         }
 
     def __init__(self, config, trainer, valid_pred, test_pred, logger):
@@ -55,8 +56,21 @@ class JesusPipeline(pipelines.BasePipeline):
                 self.test_pred.dataset.init(force=False)
     
         base_path_g = None
+        ewc_params = {}
 
-        for train_ctxt in self.trainer.iter_train(only_cached=self.config['only_cached'], _top_epoch=self.config.get('finetune')):
+        # initialize EWC
+        base_path = util.path_model_trainer(self.trainer.ranker, self.trainer.vocab, self.trainer, self.trainer.dataset)
+        ewc_path = "/".join(base_path.split("/")[:-1])+"/ewc.pickle"
+        task_name = self.trainer.dataset.path_segment().split("_")[0]
+
+        try:
+            my_ewc = pickle.load(open(ewc_path,"rb"))
+        except (OSError, IOError) as e:
+            my_ewc = EWCValues(path=ewc_path)
+        #print("EWC PATH: ",ewc_path, task_name)
+
+        _train_it = self.trainer.iter_train(only_cached=self.config['only_cached'], _top_epoch=self.config.get('finetune'), ewc_params=my_ewc)
+        for train_ctxt in _train_it:
         
             if self.config.get('onlytest'):
                 base_path_g = train_ctxt['base_path']
@@ -128,12 +142,54 @@ class JesusPipeline(pipelines.BasePipeline):
                 'valid_metrics': top_valid_ctxt['metrics'],
             })
 
+
+
         # save top train epoch for faster testing without needing the retraining phase
         if not self.config.get('onlytest'):
             #pickle.dump(top_epoch, open( top_train_ctxt['base_path']+"/top_epoch.pickle", "wb") )
             # move best to -2.p
 
             self.trainer.save_best(top_epoch, top_train_ctxt['base_path'])
+
+            # EWC
+            # Recover parms from model after extra epoch
+            self.trainer.setewc()
+            ewc_params = next(_train_it)
+            #ewc_params.cpu()
+
+            # EWC implementation from https://github.com/ContinualAI/colab/blob/master/notebooks/intro_to_continual_learning.ipynb
+            fisher_dict = {}
+            optpar_dict = {}
+            
+            # gradients accumulated can be used to calculate fisher
+            for name, param in ewc_params.items():
+                # print(name)
+                # print(param)
+
+                optpar_path = my_ewc.getOptpar(task_name, name)
+                pickle.dump(param, open(optpar_path, "wb"))
+                #optpar_dict[name] = param.clone()
+                
+                fisher_path = my_ewc.getFisher(task_name, name)
+                param = param.pow(2)
+                pickle.dump(param, open(fisher_path, "wb"))
+                #fisher_dict[name] = param.clone().pow(2)
+
+                my_ewc.addNew(task_name, name)
+                
+            ####
+            # load EWC object
+            # get task ID  -> up before the loop train_iter
+            ####
+            #print("EWC params", ewc_params)
+            #my_ewc.setValues(task_name, ewc_params)
+
+            #my_ewc.setValues(task_name, {'fisher':fisher_dict, 'optpar':optpar_dict})
+            ###
+            # save EWC object
+            ###
+            pickle.dump(my_ewc, open(ewc_path, "wb"))
+
         
 
         if self.config.get('onlytest'): # for onlytest use also finetune=true, to load best epoch at first iteration
@@ -210,3 +266,36 @@ class JesusPipeline(pipelines.BasePipeline):
             for metric, value in sorted(ctxt['metrics'].items()):
                 f.write('{}\t{:.4f}'.format(metric, value))
                 f.write('\n')
+
+
+class EWCValues():
+
+    def __init__(self, ewc_lambda=0.4, path=None):
+        self.fisher_dict = {}
+        self.optpar_dict = {}
+        self.ewc_lambda = ewc_lambda
+        self.tasks = set()
+        self.param_name = set()
+        self.path = "/".join(path.split("/")[:-1])
+
+    def load(self):
+        pass
+
+    def save(self):
+        pass
+
+
+    def addNew(self, task_name, param_name):
+        self.tasks.add(task_name)
+        self.param_name.add(param_name)
+
+    def getOptpar(self,task_name, param_name):
+        return self.path+"/"+task_name+"_optpar_"+param_name+".pickle"
+
+    def getFisher(self, task_name, param_name):
+        return self.path+"/"+task_name+"_fisher_"+param_name+".pickle"
+
+    def setValues(self, task_name, ewc_params):
+        self.fisher_dict[task_name] = ewc_params['fisher']
+        self.optpar_dict[task_name] = ewc_params['optpar']
+        self.tasks.add(task_name)

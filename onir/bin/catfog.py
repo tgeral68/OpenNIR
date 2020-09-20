@@ -6,6 +6,12 @@ import subprocess
 import os
 
 
+pipeline = "jesus"
+pipeline = "ewc"
+
+output_dir = "results"
+output_dir = "results_ewc"
+
 _BERT_MODEL_PARAMS="trainer.grad_acc_batch=1 valid_pred.batch_size=4 test_pred.batch_size=4"
 
 models_ranker = {
@@ -47,6 +53,8 @@ config_test_dataset = {
 
 _config_name=""
 
+datafolder = "/home/jlovon/workspace/data"
+#datafolder = "../data"
 
 def parse_args(arg_iter, cd=None):
 	for arg in arg_iter:
@@ -113,7 +121,7 @@ def main():
 			ranker = models_ranker[model]
 
 			# do training of model with dataset in modelspace (not testing)
-			command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} ranker.add_runscore=True {config_dataset[ds_train]} "
+			command = f"CUDA_VISIBLE_DEVICES={models_gpu[model]} python -m onir.bin.pipeline pipeline={pipeline} modelspace={modelspace} data_dir={datafolder}  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} ranker.add_runscore=True {config_dataset[ds_train]} "
 			if prev_ds is not None:
 				ncommand = f"pipeline.finetune=true trainer.pipeline={datasets_training[prev_ds]} "
 				command+= ncommand
@@ -135,9 +143,9 @@ def main():
 				current_gpu = models_gpu[model]
 				#if pivot_gpu is not None and ds_test=="msmarco":
 				#	current_gpu = pivot_gpu
-				output_f = f"results/model_{model}{filename}-test_{ds_test}"
+				output_f = f"{output_dir}/model_{model}{filename}-test_{ds_test}"
                 #test over this dataset
-				command = f"FILE='{output_f}'\nif [ -f $FILE ]; then\n\techo 'this file {output_f} exists!'\nelse\n\tCUDA_VISIBLE_DEVICES={current_gpu} python -m onir.bin.pipeline pipeline=jesus modelspace={modelspace} data_dir=../data  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} 	ranker.add_runscore=True {config_dataset[ds_train]} {config_test_dataset[ds_test]} pipeline.test=true 	pipeline.onlytest=true 	pipeline.finetune=true 	trainer.pipeline={datasets_training[ds_train]} 	pipeline.savefile=model_{model}{filename}-test_{ds_test} >output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err\nfi &"
+				command = f"FILE='{output_f}'\nif [ -f $FILE ]; then\n\techo 'this file {output_f} exists!'\nelse\n\tCUDA_VISIBLE_DEVICES={current_gpu} python -m onir.bin.pipeline pipeline={pipeline} modelspace={modelspace} data_dir={datafolder}  vocab.source=glove vocab.variant=cc-42b-300d 	{models_ranker[model]} 	ranker.add_runscore=True {config_dataset[ds_train]} {config_test_dataset[ds_test]} pipeline.test=true 	pipeline.onlytest=true 	pipeline.finetune=true 	trainer.pipeline={datasets_training[ds_train]} 	pipeline.savefile={output_f} >output/tr_{modelspace}_{model}.ts_{ds_test}.out 2>output/tr_{modelspace}_{model}.ts_{ds_test}.err\nfi &"
 				
 				#write file
 
