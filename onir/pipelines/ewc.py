@@ -3,7 +3,7 @@ import json
 from onir import util, pipelines
 import onir
 import pickle
-
+#import numpy as np
 @pipelines.register('ewc')
 class EWCPipeline(pipelines.BasePipeline):
     name = None
@@ -24,6 +24,7 @@ class EWCPipeline(pipelines.BasePipeline):
             'finetune': False,
             'savefile': '_',
             'dataset': '',
+            'ewc': '0.4',
         }
 
     def __init__(self, config, trainer, valid_pred, test_pred, logger):
@@ -60,13 +61,13 @@ class EWCPipeline(pipelines.BasePipeline):
 
         # initialize EWC
         base_path = util.path_model_trainer(self.trainer.ranker, self.trainer.vocab, self.trainer, self.trainer.dataset)
-        ewc_path = "/".join(base_path.split("/")[:-1])+"/ewc.pickle"
+        ewc_path = "/".join(base_path.split("/")[:-1])+"/ewc-"+self.config['ewc']+".pickle"
         task_name = self.trainer.dataset.path_segment().split("_")[0]
 
         try:
             my_ewc = pickle.load(open(ewc_path,"rb"))
         except (OSError, IOError) as e:
-            my_ewc = EWCValues(path=ewc_path)
+            my_ewc = EWCValues(path=ewc_path,ewc_lambda=float(self.config['ewc']))
         #print("EWC PATH: ",ewc_path, task_name)
 
         _train_it = self.trainer.iter_train(only_cached=self.config['only_cached'], _top_epoch=self.config.get('finetune'), ewc_params=my_ewc)
@@ -74,7 +75,7 @@ class EWCPipeline(pipelines.BasePipeline):
         
             if self.config.get('onlytest'):
                 base_path_g = train_ctxt['base_path']
-                self.logger.debug(f'[jesus] skipping training')
+                self.logger.debug(f'[catfog] skipping training')
                 top_train_ctxt=train_ctxt
                 break
 
@@ -135,7 +136,7 @@ class EWCPipeline(pipelines.BasePipeline):
         if not self.config.get('onlytest'):
             self.logger.info('top validation epoch={} {}={}'.format(top_epoch, self.config['val_metric'], top_value))
 
-            self.logger.info(f'[jesus: top_train_ctxt] {top_train_ctxt}')
+            self.logger.info(f'[catfog: top_train_ctxt] {top_train_ctxt}')
             file_output.update({
                 'valid_epoch': top_epoch,
                 'valid_run': top_valid_ctxt['run_path'],
@@ -148,11 +149,9 @@ class EWCPipeline(pipelines.BasePipeline):
         if not self.config.get('onlytest'):
             #pickle.dump(top_epoch, open( top_train_ctxt['base_path']+"/top_epoch.pickle", "wb") )
             # move best to -2.p
-
             self.trainer.save_best(top_epoch, top_train_ctxt['base_path'])
 
-            # EWC
-            # Recover parms from model after extra epoch
+            # EWC, recover parms from model after extra epoch
             self.trainer.setewc()
             ewc_params = next(_train_it)
             #ewc_params.cpu()
@@ -193,11 +192,11 @@ class EWCPipeline(pipelines.BasePipeline):
         
 
         if self.config.get('onlytest'): # for onlytest use also finetune=true, to load best epoch at first iteration
-            self.logger.debug(f'[jesus] loading top context')
+            self.logger.debug(f'[catfog] loading top context')
             #top_epoch = pickle.load(open(base_path_g+"/top_epoch.pickle", "rb"))
-            #self.logger.debug(f'[jesus] loading top context ... {top_epoch} epoch')
+            #self.logger.debug(f'[catfog] loading top context ... {top_epoch} epoch')
             #top_train_ctxt = self.trainer.trainCtx(top_epoch)
-            self.logger.debug(f'[jesus] Top epoch context: {dict(top_train_ctxt)}')
+            self.logger.debug(f'[catfog] Top epoch context: {dict(top_train_ctxt)}')
 
         
         if self.config['test']:
@@ -260,7 +259,8 @@ class EWCPipeline(pipelines.BasePipeline):
 
     def _write_metrics_file(self, ctxt):
         outputdir = ""
-        filename = os.path.join(outputdir, self.config.get('savefile')) # format model-namemodel_train-dataset_test-dataset_train-dataset_test-dataset
+        # format model-namemodel_train-dataset_test-dataset_train-dataset_test-dataset
+        filename = os.path.join(outputdir, self.config.get('savefile')) 
 
         with open(filename, "w") as f:
             for metric, value in sorted(ctxt['metrics'].items()):
@@ -290,10 +290,10 @@ class EWCValues():
         self.param_name.add(param_name)
 
     def getOptpar(self,task_name, param_name):
-        return self.path+"/"+task_name+"_optpar_"+param_name+".pickle"
+        return self.path+"/"+task_name+"_optpar_"+param_name+"_"+str(self.ewc_lambda)+".pickle"
 
     def getFisher(self, task_name, param_name):
-        return self.path+"/"+task_name+"_fisher_"+param_name+".pickle"
+        return self.path+"/"+task_name+"_fisher_"+param_name+"_"+str(self.ewc_lambda)+".pickle"
 
     def setValues(self, task_name, ewc_params):
         self.fisher_dict[task_name] = ewc_params['fisher']

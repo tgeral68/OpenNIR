@@ -6,7 +6,7 @@ import subprocess
 import os
 
 
-pipeline = "jesus"
+pipeline = "catfog"
 pipeline = "ewc"
 
 output_dir = "results"
@@ -53,8 +53,7 @@ config_test_dataset = {
 
 _config_name=""
 
-datafolder = "/home/jlovon/workspace/data"
-#datafolder = "../data"
+datafolder = "../data"
 
 def parse_args(arg_iter, cd=None):
 	for arg in arg_iter:

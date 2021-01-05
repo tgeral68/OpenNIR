@@ -1,6 +1,6 @@
 # pylint: disable=C0413
 from onir import util
-registry = util.Registry(default='pairwise_ewc')
+registry = util.Registry(default='pairwise_ewc') # Change this line to change trainer!
 register = registry.register
 
 from onir.trainers import misc

@@ -176,7 +176,8 @@ class PairwiseEWCTrainer(trainers.Trainer):
 
         #load ranker/optimizer
         if _top_epoch:
-            __path="/".join(base_path.split("/")[:-1])+"/"+self.config['pipeline'] # trainer.pipeline=msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs
+            # trainer.pipeline=msmarco_train_bm25_k1-0.82_b-0.68.100_mspairs
+            __path="/".join(base_path.split("/")[:-1])+"/"+self.config['pipeline'] 
             self.logger.info(f'loading prev model : {__path}')
             w_path = os.path.join(__path, 'weights','-2.p')
             oppt_path = os.path.join(__path, 'optimizer','-2.p')

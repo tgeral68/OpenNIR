@@ -5,7 +5,7 @@ register = registry.register
 
 from onir.pipelines.base import BasePipeline
 from onir.pipelines.default import DefaultPipeline
-from onir.pipelines.jesus import JesusPipeline
+from onir.pipelines.catfog import CatfogPipeline
 from onir.pipelines.ewc import EWCPipeline
 from onir.pipelines.grid_search import GridSearchPipeline
 from onir.pipelines.extract_bert_weights import ExtractBertWeights

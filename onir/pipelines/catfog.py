@@ -4,8 +4,8 @@ from onir import util, pipelines
 import onir
 import pickle
 
-@pipelines.register('jesus')
-class JesusPipeline(pipelines.BasePipeline):
+@pipelines.register('catfog')
+class CatfogPipeline(pipelines.BasePipeline):
     name = None
 
     @staticmethod
@@ -60,7 +60,7 @@ class JesusPipeline(pipelines.BasePipeline):
         
             if self.config.get('onlytest'):
                 base_path_g = train_ctxt['base_path']
-                self.logger.debug(f'[jesus] skipping training')
+                self.logger.debug(f'[catfog] skipping training')
                 top_train_ctxt=train_ctxt
                 break
 
@@ -121,7 +121,7 @@ class JesusPipeline(pipelines.BasePipeline):
         if not self.config.get('onlytest'):
             self.logger.info('top validation epoch={} {}={}'.format(top_epoch, self.config['val_metric'], top_value))
 
-            self.logger.info(f'[jesus: top_train_ctxt] {top_train_ctxt}')
+            self.logger.info(f'[catfog: top_train_ctxt] {top_train_ctxt}')
             file_output.update({
                 'valid_epoch': top_epoch,
                 'valid_run': top_valid_ctxt['run_path'],
@@ -137,16 +137,17 @@ class JesusPipeline(pipelines.BasePipeline):
         
 
         if self.config.get('onlytest'): # for onlytest use also finetune=true, to load best epoch at first iteration
-            self.logger.debug(f'[jesus] loading top context')
+            self.logger.debug(f'[catfog] loading top context')
             #top_epoch = pickle.load(open(base_path_g+"/top_epoch.pickle", "rb"))
-            #self.logger.debug(f'[jesus] loading top context ... {top_epoch} epoch')
+            #self.logger.debug(f'[catfog] loading top context ... {top_epoch} epoch')
             #top_train_ctxt = self.trainer.trainCtx(top_epoch)
-            self.logger.debug(f'[jesus] Top epoch context: {dict(top_train_ctxt)}')
+            self.logger.debug(f'[catfog] Top epoch context: {dict(top_train_ctxt)}')
 
         
         if self.config['test']:
             self.logger.info(f'Starting load ranker')
             top_train_ctxt['ranker'] = onir.trainers.base._load_ranker(top_train_ctxt['ranker'](), top_train_ctxt['ranker_path'])
+            self.logger.debug(f'[catfog] test_pred :  {self.test_pred}')
 
             self.logger.info(f'Starting test predictor run')
             with self.logger.duration('testing'):
@@ -204,7 +205,8 @@ class JesusPipeline(pipelines.BasePipeline):
 
     def _write_metrics_file(self, ctxt):
         outputdir = ""
-        filename = os.path.join(outputdir, self.config.get('savefile')) # format model-namemodel_train-dataset_test-dataset_train-dataset_test-dataset
+        # format model-namemodel_train-dataset_test-dataset_train-dataset_test-dataset
+        filename = os.path.join(outputdir, self.config.get('savefile')) 
 
         with open(filename, "w") as f:
             for metric, value in sorted(ctxt['metrics'].items()):

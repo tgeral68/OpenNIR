@@ -28,8 +28,8 @@ FOLDS = {
 }
 
 
-# we use folds, but we are looking for the best split train/test similar to previous results already found
-# we search for 36/18 splits, donc for training 36 = 27/9 train/valid
+# we use folds, but we are looking for the best split train/test similar to previous results
+# we search for 27/18 splits, for training 36 = 27/9 train/valid
 _ALL = set.union(*FOLDS.values())
 _FOLD_IDS = list(sorted(FOLDS.keys()))
 for i in range(len(_FOLDS)):
@@ -75,7 +75,6 @@ https://ir.nist.gov/covidSubmit/"""
         result = datasets.IndexBackedDataset.default_config()
         result.update({
             # subset of queries to use
-            #'subset': onir.config.Choices(['rnd1-query', 'rnd1-quest', 'rnd1-narr', 'rnd1-udel', 'rnd2-query', 'rnd2-quest', 'rnd2-narr', 'rnd2-udel', 'rnd5-query', 'rnd5-quest', 'rnd5-narr', 'rnd5-udel']),
             'subset': 'all',
             # date of CORD-19 dump to use
             'date': onir.config.Choices(['2020-07-16']),
@@ -143,11 +142,6 @@ https://ir.nist.gov/covidSubmit/"""
         filter_queries = {str(qid): qtext for qid, qtype, qtext in plaintext.read_tsv(path) if qtype in fields and str(qid) in FOLDS[fold]}
         return filter_queries
         
-
-    #def qrels(self):
-    #    return self._base_qrels(self.config['subset'])
-
-    
 
     def init(self, force=False):
         needs_docs = []
