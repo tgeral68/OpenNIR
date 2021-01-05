@@ -9,6 +9,7 @@ Catastrophic Forgetting phenomenon in a neural ad-hoc ranking
 To install OpenNIR and download/setup the datasets please refer to the [source](https://github.com/Georgetown-IR-Lab/OpenNIR).
 
 Setup a configuration (models + dataset sequence). Under `config/catastrophic_forgetting/configX`.
+
 For example, to setup a dataset sequence CORD19 + MSMarco, working with 3 models (DRMM, VBERT, and CEDR),
 we create the following file:
 
@@ -27,12 +28,16 @@ python -m onir.bin.catfog config/catastrophic_forgetting/file
 
 
 This will generate the script files to work in the `script_evals` folder. 
+
 Parameters can be changed in the `onir/bin/catfog.py` file and the generated scripts.
 
 ### The catfog.py file
 
 We can choose whether we can work with the classical pipeline (called `catfog`) or applying an EWC strategy.
-In the first lines, we choose which pipeline we want to use. Please note that, if we are using the `catfog` pipeline, we must select the default `pairwise` trainer in the `trainers/base.py` file, and `pairwise_ewc` if we are using the `EWC` pipeline.
+
+In the first lines, we choose which pipeline we want to use.
+
+Please note that, if we are using the `catfog` pipeline, we must select the default `pairwise` trainer in the `trainers/base.py` file, and `pairwise_ewc` if we are using the `EWC` pipeline.
 
 
 
