@@ -21,13 +21,13 @@ model=vbert
 model=cedr
 ```
 
-We must create the `script_evals` and `output` folders, then, we execute the command:
+We must create the `scripts_evals` and `output` folders, then, we execute the command:
 ```bash
 python -m onir.bin.catfog config/catastrophic_forgetting/file
 ```
 
 
-This will generate the script files to work in the `script_evals` folder. 
+This will generate the script files to work in the `scripts_evals` folder. 
 
 Parameters can be changed in the `onir/bin/catfog.py` file and the generated scripts.
 
