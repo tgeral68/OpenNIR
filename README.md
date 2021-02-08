@@ -66,11 +66,11 @@ Moreoften, we included classes to work with mixed datasets (in this case MSMarco
 For further details of this setup, please refer to the paper:
 
 ```
-@InProceedings{macavaney:wsdm2020-onir,
-  author = {MacAvaney, Sean},
-  title = {{OpenNIR}: A Complete Neural Ad-Hoc Ranking Pipeline},
-  booktitle = {{WSDM} 2020},
-  year = {2020}
+@InProceedings{lovon:ecir2021-catfog,
+  author = {Jesús Lovón-Melgarejo, Laure Soulier, Karen Pinel-Sauvagnat and Lynda Tamine},
+  title = {Studying the Catastrophic Forgetting Problem in Neural Ranking Models},
+  booktitle = {{ECIR} 2021},
+  year = {2021}
 }
 ```
  
